@@ -1,0 +1,4 @@
+backend/agent_hire
+__pycache__/
+*.pyc
+.env
