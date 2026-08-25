@@ -1,8 +1,13 @@
+import os
+
+from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
+load_dotenv()
+
 # Connection string: dialect+driver://user:password@host:port/database_name
-DATABASE_URL = "mysql+pymysql://agenthire_user:agenthire_pass@localhost:3306/agenthire"
+DATABASE_URL = os.environ["DATABASE_URL"]
 
 # Engine = manages the pool of actual connections to MySQL. Doesn't connect yet, just knows how to.
 engine = create_engine(DATABASE_URL)
