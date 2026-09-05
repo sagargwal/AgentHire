@@ -1,0 +1,903 @@
+{
+  "company": {
+    "name": "Nexus Health",
+    "industry": "Healthcare Technology & Services",
+    "founded_year": 2012,
+    "description": "Unified healthcare intelligence platform providing clinical decision support, insurance claims analytics, patient data management, and regulatory compliance tooling for hospitals and payers",
+    "headquarters": "Minneapolis, MN",
+    "size": "4000-6000 employees"
+  },
+  "departments": [
+    {
+      "id": "tech",
+      "name": "Technology",
+      "leveling_track": "engineering",
+      "description": "Builds and maintains all software products and internal platforms",
+      "levels": [
+        {
+          "code": "L1", "title": "Associate Engineer",
+          "scope": "Works on well-defined, scoped tasks under close supervision. Learns codebase and team practices. Rarely makes independent technical decisions.",
+          "autonomy": "low", "manages_people": false, "mentors_levels": [],
+          "experience_min": 0, "experience_max": 2,
+          "publications_required": false, "publications_min": null,
+          "typical_background": "New grad or intern transitioning to full-time"
+        },
+        {
+          "code": "L2", "title": "Software Engineer",
+          "scope": "Owns individual features end-to-end. Coordinates with adjacent teams for integration. Makes implementation-level decisions independently.",
+          "autonomy": "moderate", "manages_people": false, "mentors_levels": ["L1"],
+          "experience_min": 2, "experience_max": 5,
+          "publications_required": false, "publications_min": null,
+          "typical_background": "2-5 years industry experience, owns work independently"
+        },
+        {
+          "code": "L3", "title": "Senior Engineer",
+          "scope": "Owns significant system components. Sets technical direction for features. Mentors junior engineers. Participates in design reviews across teams.",
+          "autonomy": "high", "manages_people": false, "mentors_levels": ["L1", "L2"],
+          "experience_min": 4, "experience_max": 8,
+          "publications_required": false, "publications_min": null,
+          "typical_background": "Seasoned engineer who drives quality and mentorship"
+        },
+        {
+          "code": "L4", "title": "Staff Engineer",
+          "scope": "Drives technical direction for an entire team. Makes cross-team architecture decisions. Represents team in org-wide design forums. Owns multi-quarter technical roadmaps at team level.",
+          "autonomy": "very_high", "manages_people": false, "mentors_levels": ["L2", "L3"],
+          "experience_min": 7, "experience_max": 12,
+          "publications_required": false, "publications_min": null,
+          "typical_background": "Deep technical leader, often mistaken for engineering manager but stays IC"
+        },
+        {
+          "code": "L5", "title": "Principal Engineer",
+          "scope": "Sets technical strategy across multiple teams or a full domain. Defines standards adopted org-wide. Frequent cross-org influence. Represents Nexus Health externally.",
+          "autonomy": "very_high", "manages_people": false, "mentors_levels": ["L3", "L4"],
+          "experience_min": 12, "experience_max": 18,
+          "publications_required": false, "publications_min": null,
+          "typical_background": "Rare technical voice with org-wide credibility"
+        },
+        {
+          "code": "L6", "title": "Distinguished Engineer",
+          "scope": "Organization-wide technical impact. Defines patterns and architecture standards across all of engineering. External community presence expected (conference talks, open source contributions).",
+          "autonomy": "very_high", "manages_people": false, "mentors_levels": ["L4", "L5"],
+          "experience_min": 16, "experience_max": 25,
+          "publications_required": false, "publications_min": null,
+          "typical_background": "Recognized externally, defines the company's technical reputation"
+        },
+        {
+          "code": "L7", "title": "Fellow",
+          "scope": "Defines multi-year technical bets for the organization. Advises CTO and executive leadership. Rare designation — fewer than 5 exist at any time at Nexus Health.",
+          "autonomy": "very_high", "manages_people": false, "mentors_levels": ["L5", "L6"],
+          "experience_min": 20, "experience_max": null,
+          "publications_required": false, "publications_min": null,
+          "typical_background": "Exceptional individual who could be a CTO elsewhere"
+        },
+        {
+          "code": "L8", "title": "Chief Architect",
+          "scope": "Most senior individual contributor. Reports directly to CTO. Owns the organization's entire technical architecture vision across all products and platforms.",
+          "autonomy": "very_high", "manages_people": false, "mentors_levels": ["L5", "L6", "L7"],
+          "experience_min": 25, "experience_max": null,
+          "publications_required": false, "publications_min": null,
+          "typical_background": "One person in the organization"
+        }
+      ],
+      "teams": [
+        {
+          "id": "claims_ai",
+          "name": "Claims AI",
+          "description": "Owns the claims fraud detection ML pipeline and clinical decision support integration layer between the legacy claims processing system and downstream ML inference services",
+          "headcount": 8,
+          "founded_year": 2019,
+          "technologies": [
+            {"name": "Python", "category": "language", "mandatory": true, "adopted": 2019, "deprecated": null, "notes": "Primary ML and service layer language"},
+            {"name": "Java", "category": "language", "mandatory": true, "adopted": 2019, "deprecated": null, "notes": "Legacy claims processing system, being gradually wrapped by Python services"},
+            {"name": "PostgreSQL", "category": "database", "mandatory": true, "adopted": 2019, "deprecated": null, "notes": "Operational data store for claims records"},
+            {"name": "XML", "category": "data_format", "mandatory": true, "adopted": 2019, "deprecated": 2022, "notes": "Deprecated Q2 2022, replaced by JSON-based interchange and FHIR R4"},
+            {"name": "REST APIs", "category": "integration", "mandatory": true, "adopted": 2019, "deprecated": null, "notes": "Service-to-service communication"},
+            {"name": "FHIR R4", "category": "healthcare_standard", "mandatory": true, "adopted": 2021, "deprecated": null, "notes": "Mandatory for all patient data outputs - regulatory requirement"},
+            {"name": "HL7 v2", "category": "healthcare_standard", "mandatory": true, "adopted": 2019, "deprecated": null, "notes": "Hospital system integration with Epic and Cerner"},
+            {"name": "Docker", "category": "infrastructure", "mandatory": false, "adopted": 2020, "deprecated": null, "notes": "Container packaging for ML services"},
+            {"name": "Kafka", "category": "streaming", "mandatory": true, "adopted": 2022, "deprecated": null, "notes": "Adopted for real-time inference streaming migration"},
+            {"name": "Kubernetes", "category": "infrastructure", "mandatory": false, "adopted": 2022, "deprecated": null, "notes": "Orchestration for ML service deployments"},
+            {"name": "AWS S3", "category": "cloud", "mandatory": false, "adopted": 2020, "deprecated": null, "notes": "Claims data archival and model artifact storage"},
+            {"name": "AWS SageMaker", "category": "cloud", "mandatory": false, "adopted": 2022, "deprecated": null, "notes": "ML model training at scale"}
+          ],
+          "projects": [
+            {"name": "Claims Fraud Detection v1", "status": "completed", "start": 2019, "end": 2021, "description": "Initial rule-based fraud detection pipeline replacing manual review"},
+            {"name": "Claims Fraud Detection v2", "status": "completed", "start": 2021, "end": 2022, "description": "ML-based fraud scoring model replacing rule engine, 40% improvement in detection rate"},
+            {"name": "FHIR R4 Compliance Migration", "status": "completed", "start": 2021, "end": 2022, "description": "Migrated all patient data outputs from XML to FHIR R4 format for CMS compliance"},
+            {"name": "Claims-ML Integration Layer", "status": "active", "start": 2022, "end": null, "description": "API bridge between legacy Java claims system and Python ML inference services"},
+            {"name": "Real-time Inference Migration", "status": "active", "start": 2023, "end": null, "description": "Moving from nightly batch fraud scoring to real-time stream processing via Kafka"}
+          ],
+          "internal_collaborations": ["ML Platform", "Patient Data Platform", "Clinical Decision Support API"],
+          "external_collaborations": ["Epic (HL7 integration)", "Cerner (HL7 integration)", "CMS (regulatory reporting)"]
+        },
+        {
+          "id": "patient_data_platform",
+          "name": "Patient Data Platform",
+          "description": "Owns ingestion, normalization, and storage of patient data from hospital systems, labs, and claims. Serves as the canonical patient data layer for all downstream products.",
+          "headcount": 11,
+          "founded_year": 2018,
+          "technologies": [
+            {"name": "Python", "category": "language", "mandatory": true, "adopted": 2018, "deprecated": null, "notes": "Primary ETL and pipeline language"},
+            {"name": "Apache Spark", "category": "data_processing", "mandatory": true, "adopted": 2018, "deprecated": null, "notes": "Large-scale batch data processing"},
+            {"name": "Delta Lake", "category": "data_storage", "mandatory": true, "adopted": 2020, "deprecated": null, "notes": "ACID-compliant data lake storage on S3"},
+            {"name": "Apache Airflow", "category": "orchestration", "mandatory": true, "adopted": 2018, "deprecated": null, "notes": "Pipeline orchestration and scheduling"},
+            {"name": "AWS S3", "category": "cloud", "mandatory": true, "adopted": 2018, "deprecated": null, "notes": "Primary data lake storage"},
+            {"name": "AWS Glue", "category": "cloud", "mandatory": false, "adopted": 2019, "deprecated": null, "notes": "Managed ETL for some ingestion workloads"},
+            {"name": "FHIR R4", "category": "healthcare_standard", "mandatory": true, "adopted": 2020, "deprecated": null, "notes": "Standard format for all patient data outputs"},
+            {"name": "HL7 v2", "category": "healthcare_standard", "mandatory": true, "adopted": 2018, "deprecated": null, "notes": "Inbound data from hospital systems"},
+            {"name": "Snowflake", "category": "database", "mandatory": false, "adopted": 2021, "deprecated": null, "notes": "Analytics-facing data warehouse layer"},
+            {"name": "dbt", "category": "transformation", "mandatory": false, "adopted": 2021, "deprecated": null, "notes": "Data transformation and documentation"},
+            {"name": "Great Expectations", "category": "data_quality", "mandatory": false, "adopted": 2022, "deprecated": null, "notes": "Data quality validation in pipelines"},
+            {"name": "Hadoop HDFS", "category": "data_storage", "mandatory": true, "adopted": 2018, "deprecated": 2020, "notes": "Replaced by Delta Lake on S3 in 2020"}
+          ],
+          "projects": [
+            {"name": "Unified Patient Record v1", "status": "completed", "start": 2018, "end": 2020, "description": "First generation centralized patient record combining claims and clinical data"},
+            {"name": "Delta Lake Migration", "status": "completed", "start": 2020, "end": 2021, "description": "Migrated from HDFS to Delta Lake, enabling ACID transactions and time-travel queries"},
+            {"name": "Real-time Patient Events", "status": "active", "start": 2022, "end": null, "description": "Near-real-time ingestion of patient events from Epic/Cerner for downstream alerting"},
+            {"name": "Data Quality Framework", "status": "active", "start": 2022, "end": null, "description": "Organization-wide data quality standards and automated validation for all patient data ingestion"},
+            {"name": "Snowflake Analytics Layer", "status": "active", "start": 2021, "end": null, "description": "Analytics-facing data warehouse serving BI tools and internal analysts"}
+          ],
+          "internal_collaborations": ["Claims AI", "Clinical AI Lab", "Data & Analytics Engineering", "ML Platform"],
+          "external_collaborations": ["Epic (HL7/FHIR ingestion)", "Cerner (HL7/FHIR ingestion)", "Quest Diagnostics (lab data)", "LabCorp (lab data)"]
+        },
+        {
+          "id": "clinical_decision_support_api",
+          "name": "Clinical Decision Support API",
+          "description": "Builds and operates the API layer that surfaces clinical intelligence to hospital systems and care management applications in real time",
+          "headcount": 7,
+          "founded_year": 2020,
+          "technologies": [
+            {"name": "Python", "category": "language", "mandatory": true, "adopted": 2020, "deprecated": null, "notes": "Primary API and service language"},
+            {"name": "FastAPI", "category": "framework", "mandatory": true, "adopted": 2020, "deprecated": null, "notes": "REST API framework for all external-facing services"},
+            {"name": "Redis", "category": "caching", "mandatory": true, "adopted": 2020, "deprecated": null, "notes": "Low-latency caching for clinical decision endpoints"},
+            {"name": "PostgreSQL", "category": "database", "mandatory": true, "adopted": 2020, "deprecated": null, "notes": "Operational database for API metadata and audit logs"},
+            {"name": "FHIR R4", "category": "healthcare_standard", "mandatory": true, "adopted": 2020, "deprecated": null, "notes": "All API responses must conform to FHIR R4 - regulatory and interoperability requirement"},
+            {"name": "AWS EKS", "category": "cloud", "mandatory": true, "adopted": 2020, "deprecated": null, "notes": "Kubernetes-managed API deployment for auto-scaling"},
+            {"name": "AWS API Gateway", "category": "cloud", "mandatory": false, "adopted": 2021, "deprecated": null, "notes": "External-facing API gateway layer"},
+            {"name": "OpenAPI", "category": "documentation", "mandatory": true, "adopted": 2020, "deprecated": null, "notes": "All APIs must be OpenAPI 3.0 documented"},
+            {"name": "Prometheus", "category": "monitoring", "mandatory": false, "adopted": 2021, "deprecated": null, "notes": "API latency and availability monitoring"},
+            {"name": "gRPC", "category": "integration", "mandatory": false, "adopted": 2022, "deprecated": null, "notes": "High-performance internal service communication"}
+          ],
+          "projects": [
+            {"name": "CDS API v1", "status": "completed", "start": 2020, "end": 2021, "description": "Initial clinical decision support API serving risk scores to care management apps"},
+            {"name": "Sub-100ms Latency Initiative", "status": "completed", "start": 2021, "end": 2022, "description": "Redesigned caching and query patterns to achieve sub-100ms p99 latency for critical endpoints"},
+            {"name": "FHIR-Native API Refactor", "status": "completed", "start": 2022, "end": 2023, "description": "Migrated all API responses to native FHIR R4 format for CMS interoperability rule compliance"},
+            {"name": "Multi-tenant API Platform", "status": "active", "start": 2023, "end": null, "description": "Rebuilding API layer to support multiple hospital system customers with isolated data and rate limits"}
+          ],
+          "internal_collaborations": ["Claims AI", "Clinical AI Lab", "ML Platform", "Patient Data Platform"],
+          "external_collaborations": ["Epic (SMART on FHIR integration)", "Cerner (CDS Hooks)", "Hospital network clients"]
+        },
+        {
+          "id": "member_portal",
+          "name": "Member Portal",
+          "description": "Builds and maintains the patient-facing web and mobile application where members view their health summaries, care recommendations, and benefits information",
+          "headcount": 9,
+          "founded_year": 2019,
+          "technologies": [
+            {"name": "TypeScript", "category": "language", "mandatory": true, "adopted": 2019, "deprecated": null, "notes": "Primary language for all frontend and Node.js backend code"},
+            {"name": "React", "category": "framework", "mandatory": true, "adopted": 2019, "deprecated": null, "notes": "Component framework for web portal"},
+            {"name": "Next.js", "category": "framework", "mandatory": true, "adopted": 2021, "deprecated": null, "notes": "Server-side rendering and routing, replaced Create React App in 2021"},
+            {"name": "Node.js", "category": "runtime", "mandatory": true, "adopted": 2019, "deprecated": null, "notes": "BFF (backend-for-frontend) API layer"},
+            {"name": "GraphQL", "category": "api", "mandatory": true, "adopted": 2021, "deprecated": null, "notes": "API layer between BFF and microservices, replaced REST in 2021"},
+            {"name": "PostgreSQL", "category": "database", "mandatory": true, "adopted": 2019, "deprecated": null, "notes": "User preferences and session data"},
+            {"name": "React Native", "category": "framework", "mandatory": false, "adopted": 2022, "deprecated": null, "notes": "Mobile app for iOS and Android, adopted 2022"},
+            {"name": "Storybook", "category": "tooling", "mandatory": false, "adopted": 2021, "deprecated": null, "notes": "Component library documentation"},
+            {"name": "Cypress", "category": "testing", "mandatory": true, "adopted": 2020, "deprecated": null, "notes": "End-to-end testing framework"},
+            {"name": "AWS CloudFront", "category": "cloud", "mandatory": true, "adopted": 2019, "deprecated": null, "notes": "CDN for static asset delivery"},
+            {"name": "JavaScript (vanilla)", "category": "language", "mandatory": true, "adopted": 2019, "deprecated": 2021, "notes": "Replaced by TypeScript org-wide migration in 2021"},
+            {"name": "Create React App", "category": "tooling", "mandatory": true, "adopted": 2019, "deprecated": 2021, "notes": "Replaced by Next.js in 2021 for SSR capabilities"}
+          ],
+          "projects": [
+            {"name": "Member Portal v1", "status": "completed", "start": 2019, "end": 2021, "description": "Initial web portal for member health summaries and benefits lookup"},
+            {"name": "TypeScript Migration", "status": "completed", "start": 2020, "end": 2021, "description": "Full codebase migration from JavaScript to TypeScript"},
+            {"name": "Mobile App", "status": "active", "start": 2022, "end": null, "description": "React Native iOS and Android app with feature parity to web portal"},
+            {"name": "Care Recommendations Feature", "status": "active", "start": 2023, "end": null, "description": "Personalized care recommendations surfaced from Clinical AI Lab models via CDS API"}
+          ],
+          "internal_collaborations": ["Clinical Decision Support API", "Identity & Access Management", "Customer Success"],
+          "external_collaborations": []
+        },
+        {
+          "id": "data_analytics_engineering",
+          "name": "Data & Analytics Engineering",
+          "description": "Owns the analytics data warehouse, BI tooling, and self-service analytics infrastructure used by internal teams and external client reporting",
+          "headcount": 8,
+          "founded_year": 2019,
+          "technologies": [
+            {"name": "Python", "category": "language", "mandatory": true, "adopted": 2019, "deprecated": null, "notes": "ETL scripts, data pipeline tooling"},
+            {"name": "SQL", "category": "language", "mandatory": true, "adopted": 2019, "deprecated": null, "notes": "Core analytical language across all tools"},
+            {"name": "dbt", "category": "transformation", "mandatory": true, "adopted": 2020, "deprecated": null, "notes": "Data transformation, documentation, and testing"},
+            {"name": "Snowflake", "category": "database", "mandatory": true, "adopted": 2020, "deprecated": null, "notes": "Primary analytics data warehouse"},
+            {"name": "Apache Airflow", "category": "orchestration", "mandatory": true, "adopted": 2019, "deprecated": null, "notes": "Pipeline orchestration"},
+            {"name": "Looker", "category": "bi_tool", "mandatory": true, "adopted": 2021, "deprecated": null, "notes": "Primary BI and self-service analytics tool"},
+            {"name": "Tableau", "category": "bi_tool", "mandatory": false, "adopted": 2019, "deprecated": 2021, "notes": "Replaced by Looker in 2021"},
+            {"name": "AWS Redshift", "category": "database", "mandatory": true, "adopted": 2019, "deprecated": 2020, "notes": "Replaced by Snowflake in 2020 for better performance and concurrency"},
+            {"name": "Great Expectations", "category": "data_quality", "mandatory": true, "adopted": 2021, "deprecated": null, "notes": "Data quality testing integrated into dbt pipeline"},
+            {"name": "Spark", "category": "data_processing", "mandatory": false, "adopted": 2022, "deprecated": null, "notes": "Heavy transformation jobs that exceed Snowflake compute limits"}
+          ],
+          "projects": [
+            {"name": "Redshift to Snowflake Migration", "status": "completed", "start": 2019, "end": 2020, "description": "Full data warehouse migration to Snowflake"},
+            {"name": "dbt Adoption", "status": "completed", "start": 2020, "end": 2021, "description": "Standardized all transformations to dbt, replaced ad-hoc SQL scripts"},
+            {"name": "Looker Implementation", "status": "completed", "start": 2021, "end": 2022, "description": "Self-service analytics rollout replacing Tableau"},
+            {"name": "Client Reporting Automation", "status": "active", "start": 2022, "end": null, "description": "Automated monthly and quarterly analytics reports for enterprise payer clients"},
+            {"name": "Data Mesh Initiative", "status": "active", "start": 2023, "end": null, "description": "Transitioning from centralized to federated data ownership across domains"}
+          ],
+          "internal_collaborations": ["Patient Data Platform", "Claims AI", "ML Platform", "Customer Success"],
+          "external_collaborations": ["Enterprise payer clients (reporting delivery)"]
+        },
+        {
+          "id": "ml_platform",
+          "name": "ML Platform",
+          "description": "Builds and operates the shared ML infrastructure used by all teams developing ML models: training pipelines, model serving, feature stores, and experiment tracking",
+          "headcount": 7,
+          "founded_year": 2021,
+          "technologies": [
+            {"name": "Python", "category": "language", "mandatory": true, "adopted": 2021, "deprecated": null, "notes": "All platform tooling and SDK written in Python"},
+            {"name": "Kubernetes", "category": "infrastructure", "mandatory": true, "adopted": 2021, "deprecated": null, "notes": "Model serving orchestration on EKS"},
+            {"name": "AWS SageMaker", "category": "cloud", "mandatory": true, "adopted": 2021, "deprecated": null, "notes": "Managed training jobs and hosted endpoints"},
+            {"name": "MLflow", "category": "mlops", "mandatory": true, "adopted": 2021, "deprecated": null, "notes": "Experiment tracking, model registry, and artifact storage"},
+            {"name": "Ray", "category": "distributed_computing", "mandatory": false, "adopted": 2022, "deprecated": null, "notes": "Distributed training for large models"},
+            {"name": "Feast", "category": "feature_store", "mandatory": true, "adopted": 2022, "deprecated": null, "notes": "Feature store for consistent training and serving features"},
+            {"name": "Docker", "category": "infrastructure", "mandatory": true, "adopted": 2021, "deprecated": null, "notes": "Model packaging and reproducibility"},
+            {"name": "Terraform", "category": "infrastructure", "mandatory": false, "adopted": 2021, "deprecated": null, "notes": "Infrastructure as code for platform resources"},
+            {"name": "Prometheus", "category": "monitoring", "mandatory": true, "adopted": 2021, "deprecated": null, "notes": "Model serving latency and drift monitoring"},
+            {"name": "Grafana", "category": "monitoring", "mandatory": false, "adopted": 2022, "deprecated": null, "notes": "Dashboards for model performance metrics"}
+          ],
+          "projects": [
+            {"name": "ML Platform v1", "status": "completed", "start": 2021, "end": 2022, "description": "Initial shared training and serving infrastructure, onboarded Claims AI and Clinical AI Lab"},
+            {"name": "Feature Store Launch", "status": "completed", "start": 2022, "end": 2023, "description": "Feast-based feature store eliminating training-serving skew across all ML teams"},
+            {"name": "Model Drift Monitoring", "status": "active", "start": 2022, "end": null, "description": "Automated data and concept drift detection with alerting for production models"},
+            {"name": "Self-service Training Platform", "status": "active", "start": 2023, "end": null, "description": "Enabling data scientists to launch distributed training jobs without ML Platform involvement"}
+          ],
+          "internal_collaborations": ["Claims AI", "Clinical AI Lab", "Patient Data Platform", "Data & Analytics Engineering"],
+          "external_collaborations": []
+        }
+      ]
+    },
+    {
+      "id": "health_sciences",
+      "name": "Health Sciences & Research",
+      "leveling_track": "research",
+      "description": "Clinical researchers, bioinformaticians, epidemiologists, and medical AI researchers who provide the domain expertise and scientific foundation for Nexus Health products",
+      "levels": [
+        {
+          "code": "R1", "title": "Research Associate",
+          "scope": "Executes defined research tasks under close supervision. Learns research methodology, clinical domain, and data sources. Contributes to research as supporting author.",
+          "autonomy": "low", "manages_people": false, "mentors_levels": [],
+          "experience_min": 0, "experience_max": 3,
+          "publications_required": false, "publications_min": null,
+          "typical_background": "Recent graduate (BSc or MSc), developing research skills"
+        },
+        {
+          "code": "R2", "title": "Researcher",
+          "scope": "Owns individual research workstreams with moderate supervision. Contributes to publications as co-author. Beginning to develop an independent research voice and domain expertise.",
+          "autonomy": "moderate", "manages_people": false, "mentors_levels": ["R1"],
+          "experience_min": 2, "experience_max": 5,
+          "publications_required": false, "publications_min": null,
+          "typical_background": "MSc or PhD student/recent PhD grad, 2-5 years research experience"
+        },
+        {
+          "code": "R3", "title": "Senior Researcher",
+          "scope": "Leads multi-month research programs end-to-end. First-author peer-reviewed publications required. Represents team at conferences. Cross-team influence on research methodology. Mentors R1 and R2.",
+          "autonomy": "high", "manages_people": false, "mentors_levels": ["R1", "R2"],
+          "experience_min": 4, "experience_max": 8,
+          "publications_required": true, "publications_min": 2,
+          "typical_background": "PhD with post-doctoral or industry research experience, established publication record"
+        },
+        {
+          "code": "R4", "title": "Principal Researcher",
+          "scope": "Defines the research agenda for a domain (e.g., clinical NLP, population health modeling). Strong publication record required. External advisory roles and grant authorship expected. Cross-org research strategy influence.",
+          "autonomy": "very_high", "manages_people": false, "mentors_levels": ["R2", "R3"],
+          "experience_min": 8, "experience_max": 15,
+          "publications_required": true, "publications_min": 5,
+          "typical_background": "Established researcher with recognized domain expertise and active external presence"
+        },
+        {
+          "code": "R5", "title": "Distinguished Researcher",
+          "scope": "Organization-wide research strategy. Defines Nexus Health's multi-year research direction. Externally recognized thought leader — keynote invitations, advisory boards, significant publication record.",
+          "autonomy": "very_high", "manages_people": false, "mentors_levels": ["R3", "R4"],
+          "experience_min": 15, "experience_max": null,
+          "publications_required": true, "publications_min": 10,
+          "typical_background": "Nationally or internationally recognized expert in their domain"
+        }
+      ],
+      "teams": [
+        {
+          "id": "clinical_ai_lab",
+          "name": "Clinical AI Lab",
+          "description": "Develops and validates ML models for clinical decision support — sepsis prediction, readmission risk, medication safety, and diagnostic assistance. Works directly with hospital partners on model validation.",
+          "headcount": 12,
+          "founded_year": 2019,
+          "technologies": [
+            {"name": "Python", "category": "language", "mandatory": true, "adopted": 2019, "deprecated": null, "notes": "Primary research and development language"},
+            {"name": "PyTorch", "category": "ml_framework", "mandatory": true, "adopted": 2019, "deprecated": null, "notes": "Primary deep learning framework - team standard, TensorFlow not used"},
+            {"name": "scikit-learn", "category": "ml_framework", "mandatory": true, "adopted": 2019, "deprecated": null, "notes": "Classical ML for interpretable models required in clinical settings"},
+            {"name": "FHIR R4", "category": "healthcare_standard", "mandatory": true, "adopted": 2020, "deprecated": null, "notes": "All model inputs and outputs must be FHIR R4 compliant - regulatory"},
+            {"name": "ICD-10", "category": "healthcare_standard", "mandatory": true, "adopted": 2019, "deprecated": null, "notes": "Diagnosis coding standard used in all clinical datasets"},
+            {"name": "SNOMED CT", "category": "healthcare_standard", "mandatory": false, "adopted": 2021, "deprecated": null, "notes": "Clinical terminology for concept normalization"},
+            {"name": "HL7 v2", "category": "healthcare_standard", "mandatory": true, "adopted": 2019, "deprecated": null, "notes": "Hospital data ingestion format from Epic and Cerner"},
+            {"name": "R", "category": "language", "mandatory": false, "adopted": 2019, "deprecated": null, "notes": "Statistical analysis and epidemiological modeling"},
+            {"name": "AWS SageMaker", "category": "cloud", "mandatory": false, "adopted": 2021, "deprecated": null, "notes": "Large-scale model training via ML Platform"},
+            {"name": "MLflow", "category": "mlops", "mandatory": true, "adopted": 2021, "deprecated": null, "notes": "Experiment tracking required for all model development"},
+            {"name": "Hugging Face Transformers", "category": "ml_framework", "mandatory": false, "adopted": 2022, "deprecated": null, "notes": "Clinical NLP models, clinical BERT variants"},
+            {"name": "TensorFlow", "category": "ml_framework", "mandatory": false, "adopted": 2019, "deprecated": 2020, "notes": "Dropped in 2020, team standardized on PyTorch for research flexibility"}
+          ],
+          "projects": [
+            {"name": "Sepsis Early Warning Model", "status": "active", "start": 2021, "end": null, "description": "ML model predicting sepsis onset 6 hours in advance, currently in prospective validation with 3 hospital partners"},
+            {"name": "30-day Readmission Risk", "status": "completed", "start": 2019, "end": 2022, "description": "Deployed readmission risk model integrated into discharge planning workflow at 12 hospitals"},
+            {"name": "Medication Safety Screening", "status": "active", "start": 2022, "end": null, "description": "Drug-drug interaction and contraindication detection using patient medication lists and clinical notes"},
+            {"name": "Clinical NLP Pipeline", "status": "active", "start": 2022, "end": null, "description": "Extracting structured clinical concepts from unstructured physician notes using clinical BERT models"},
+            {"name": "Diagnostic Imaging Assistance", "status": "active", "start": 2023, "end": null, "description": "Computer vision models for radiology report prioritization, early-stage research"}
+          ],
+          "internal_collaborations": ["ML Platform", "Patient Data Platform", "Clinical Decision Support API", "Epidemiology & Population Health"],
+          "external_collaborations": ["Mayo Clinic (validation partner)", "Cleveland Clinic (validation partner)", "Academic medical centers"]
+        },
+        {
+          "id": "epidemiology_population_health",
+          "name": "Epidemiology & Population Health",
+          "description": "Statistical modeling and analysis of population-level health trends, disease burden, and outcomes for payer and health system clients. Bridges clinical research and insurance analytics.",
+          "headcount": 8,
+          "founded_year": 2018,
+          "technologies": [
+            {"name": "R", "category": "language", "mandatory": true, "adopted": 2018, "deprecated": null, "notes": "Primary statistical analysis language for epidemiological modeling"},
+            {"name": "Python", "category": "language", "mandatory": true, "adopted": 2019, "deprecated": null, "notes": "Data pipeline and ML integration, secondary to R for statistics"},
+            {"name": "SAS", "category": "language", "mandatory": true, "adopted": 2018, "deprecated": null, "notes": "Required for FDA-grade statistical analyses and some client deliverables"},
+            {"name": "SQL", "category": "language", "mandatory": true, "adopted": 2018, "deprecated": null, "notes": "Claims and clinical data extraction from Snowflake"},
+            {"name": "Snowflake", "category": "database", "mandatory": true, "adopted": 2020, "deprecated": null, "notes": "Primary data source for population-level claims and clinical data"},
+            {"name": "ICD-10", "category": "healthcare_standard", "mandatory": true, "adopted": 2018, "deprecated": null, "notes": "Disease coding for all population health analyses"},
+            {"name": "CPT codes", "category": "healthcare_standard", "mandatory": true, "adopted": 2018, "deprecated": null, "notes": "Procedure coding for utilization analyses"},
+            {"name": "STATA", "category": "language", "mandatory": false, "adopted": 2018, "deprecated": 2021, "notes": "Replaced by R for most analyses, some legacy work remains"},
+            {"name": "Tableau", "category": "bi_tool", "mandatory": false, "adopted": 2019, "deprecated": 2022, "notes": "Replaced by Looker for client-facing dashboards"},
+            {"name": "Apache Spark", "category": "data_processing", "mandatory": false, "adopted": 2022, "deprecated": null, "notes": "Population-scale analyses exceeding single-node R/Python memory limits"}
+          ],
+          "projects": [
+            {"name": "Chronic Disease Burden Atlas", "status": "completed", "start": 2018, "end": 2021, "description": "Annual population health report covering diabetes, heart disease, and COPD prevalence for client health systems"},
+            {"name": "COVID-19 Impact Analysis", "status": "completed", "start": 2020, "end": 2022, "description": "Longitudinal analysis of COVID-19 impact on chronic disease management and healthcare utilization"},
+            {"name": "Social Determinants of Health Modeling", "status": "active", "start": 2021, "end": null, "description": "Integrating SDOH data (housing, food access, income) into population risk stratification models"},
+            {"name": "Value-Based Care Analytics", "status": "active", "start": 2022, "end": null, "description": "Outcomes and cost analytics for payer clients transitioning to value-based care contracts"}
+          ],
+          "internal_collaborations": ["Clinical AI Lab", "Real World Evidence", "Data & Analytics Engineering", "Customer Success"],
+          "external_collaborations": ["Payer clients", "CMS (Medicare/Medicaid data)", "State health departments"]
+        },
+        {
+          "id": "genomics_precision_medicine",
+          "name": "Genomics & Precision Medicine",
+          "description": "Builds bioinformatics pipelines and predictive models connecting genomic data to clinical outcomes, supporting precision oncology and pharmacogenomics use cases",
+          "headcount": 6,
+          "founded_year": 2021,
+          "technologies": [
+            {"name": "Python", "category": "language", "mandatory": true, "adopted": 2021, "deprecated": null, "notes": "Primary pipeline and ML language"},
+            {"name": "R", "category": "language", "mandatory": true, "adopted": 2021, "deprecated": null, "notes": "Bioconductor ecosystem for genomics analysis"},
+            {"name": "Nextflow", "category": "workflow", "mandatory": true, "adopted": 2021, "deprecated": null, "notes": "Genomics pipeline orchestration for reproducible variant calling"},
+            {"name": "AWS Batch", "category": "cloud", "mandatory": true, "adopted": 2021, "deprecated": null, "notes": "Compute-intensive genomics job execution"},
+            {"name": "AWS S3", "category": "cloud", "mandatory": true, "adopted": 2021, "deprecated": null, "notes": "Genomic data storage (VCF, BAM files)"},
+            {"name": "GATK", "category": "bioinformatics", "mandatory": true, "adopted": 2021, "deprecated": null, "notes": "Genome Analysis Toolkit for variant calling"},
+            {"name": "PyTorch", "category": "ml_framework", "mandatory": false, "adopted": 2022, "deprecated": null, "notes": "Deep learning models for variant pathogenicity prediction"},
+            {"name": "Bioconductor", "category": "bioinformatics", "mandatory": true, "adopted": 2021, "deprecated": null, "notes": "R-based genomics analysis framework"},
+            {"name": "FHIR R4", "category": "healthcare_standard", "mandatory": true, "adopted": 2022, "deprecated": null, "notes": "Genomic report output format for EHR integration"},
+            {"name": "SNOMED CT", "category": "healthcare_standard", "mandatory": true, "adopted": 2021, "deprecated": null, "notes": "Clinical terminology for phenotype coding"}
+          ],
+          "projects": [
+            {"name": "Pharmacogenomics Pipeline", "status": "active", "start": 2021, "end": null, "description": "Identifying drug response variants to guide medication selection for common drugs (statins, warfarin)"},
+            {"name": "Oncology Variant Annotation", "status": "active", "start": 2022, "end": null, "description": "Automated annotation of tumor variant calls for clinical significance and treatment implications"},
+            {"name": "Polygenic Risk Score Integration", "status": "active", "start": 2023, "end": null, "description": "Integrating PRS for cardiovascular and diabetes risk into population health models"}
+          ],
+          "internal_collaborations": ["Clinical AI Lab", "Patient Data Platform", "Epidemiology & Population Health"],
+          "external_collaborations": ["NCBI (reference databases)", "ClinVar", "Precision oncology centers"]
+        },
+        {
+          "id": "real_world_evidence",
+          "name": "Real World Evidence",
+          "description": "Generates evidence from real-world clinical and claims data to support regulatory submissions, outcomes research, and health economics studies for pharmaceutical and payer clients",
+          "headcount": 7,
+          "founded_year": 2019,
+          "technologies": [
+            {"name": "SAS", "category": "language", "mandatory": true, "adopted": 2019, "deprecated": null, "notes": "Required for FDA submissions and pharma client deliverables - regulatory standard"},
+            {"name": "R", "category": "language", "mandatory": true, "adopted": 2019, "deprecated": null, "notes": "Statistical analysis and survival modeling"},
+            {"name": "Python", "category": "language", "mandatory": false, "adopted": 2020, "deprecated": null, "notes": "Data processing and pipeline automation"},
+            {"name": "SQL", "category": "language", "mandatory": true, "adopted": 2019, "deprecated": null, "notes": "Claims data extraction from Snowflake"},
+            {"name": "Snowflake", "category": "database", "mandatory": true, "adopted": 2020, "deprecated": null, "notes": "Primary data source for claims-based RWE studies"},
+            {"name": "ICD-10", "category": "healthcare_standard", "mandatory": true, "adopted": 2019, "deprecated": null, "notes": "Disease and condition identification in claims"},
+            {"name": "NDC codes", "category": "healthcare_standard", "mandatory": true, "adopted": 2019, "deprecated": null, "notes": "Drug identification in pharmacy claims"},
+            {"name": "CPT codes", "category": "healthcare_standard", "mandatory": true, "adopted": 2019, "deprecated": null, "notes": "Procedure identification for utilization analyses"},
+            {"name": "STATA", "category": "language", "mandatory": false, "adopted": 2019, "deprecated": null, "notes": "Some legacy analyses, being phased out in favor of R"}
+          ],
+          "projects": [
+            {"name": "Comparative Effectiveness Research Platform", "status": "active", "start": 2019, "end": null, "description": "Standardized methodology for drug comparative effectiveness studies using claims data"},
+            {"name": "HEOR Dashboard", "status": "completed", "start": 2020, "end": 2022, "description": "Health economics and outcomes research dashboard for pharma client reporting"},
+            {"name": "Propensity Score Matching Framework", "status": "completed", "start": 2021, "end": 2022, "description": "Standardized causal inference methodology for all RWE studies"},
+            {"name": "FDA Submission Support", "status": "active", "start": 2022, "end": null, "description": "Supporting pharma clients with RWD-based evidence packages for regulatory submissions"}
+          ],
+          "internal_collaborations": ["Epidemiology & Population Health", "Data & Analytics Engineering"],
+          "external_collaborations": ["Pharmaceutical clients", "FDA (regulatory submissions)", "CMS"]
+        }
+      ]
+    },
+    {
+      "id": "legal",
+      "name": "Legal & Compliance",
+      "leveling_track": "legal",
+      "description": "Healthcare law, regulatory affairs, and compliance — HIPAA, FDA, CMS, insurance regulation, IP, and commercial contracts",
+      "levels": [
+        {
+          "code": "LA1", "title": "Legal Analyst",
+          "scope": "Supports legal research, contract review, and compliance documentation under supervision. No independent legal advice.",
+          "autonomy": "low", "manages_people": false, "mentors_levels": [],
+          "experience_min": 0, "experience_max": 3,
+          "publications_required": false, "publications_min": null,
+          "typical_background": "Paralegal, pre-law, or recent JD without bar admission"
+        },
+        {
+          "code": "LA2", "title": "Associate Counsel",
+          "scope": "Handles routine legal matters independently. Reviews and redlines standard contracts. Provides legal guidance on defined areas with manager review.",
+          "autonomy": "moderate", "manages_people": false, "mentors_levels": ["LA1"],
+          "experience_min": 2, "experience_max": 5,
+          "publications_required": false, "publications_min": null,
+          "typical_background": "JD with bar admission, 2-5 years at law firm or in-house"
+        },
+        {
+          "code": "LA3", "title": "Counsel",
+          "scope": "Owns significant legal workstreams independently. Advises business units without routine supervision. Manages outside counsel on defined matters.",
+          "autonomy": "high", "manages_people": false, "mentors_levels": ["LA1", "LA2"],
+          "experience_min": 5, "experience_max": 10,
+          "publications_required": false, "publications_min": null,
+          "typical_background": "Experienced attorney with healthcare or tech specialization"
+        },
+        {
+          "code": "LA4", "title": "Senior Counsel",
+          "scope": "Leads complex, high-stakes legal matters. Advises senior leadership. Manages significant outside counsel relationships. Domain expert (e.g., all HIPAA matters, all IP).",
+          "autonomy": "very_high", "manages_people": false, "mentors_levels": ["LA2", "LA3"],
+          "experience_min": 8, "experience_max": 15,
+          "publications_required": false, "publications_min": null,
+          "typical_background": "Senior attorney recognized as internal expert in a legal domain"
+        },
+        {
+          "code": "LA5", "title": "Principal Counsel",
+          "scope": "Cross-organizational legal strategy for a domain. Defines legal policy affecting the entire company. Represents Nexus Health in industry legal forums.",
+          "autonomy": "very_high", "manages_people": false, "mentors_levels": ["LA3", "LA4"],
+          "experience_min": 12, "experience_max": 20,
+          "publications_required": false, "publications_min": null,
+          "typical_background": "Recognized authority in a healthcare legal domain"
+        },
+        {
+          "code": "LA6", "title": "Associate General Counsel",
+          "scope": "Leads a legal sub-function (regulatory, IP, employment, commercial). Manages a team of attorneys. Accountable for all legal matters in their domain.",
+          "autonomy": "very_high", "manages_people": true, "mentors_levels": ["LA3", "LA4", "LA5"],
+          "experience_min": 15, "experience_max": null,
+          "publications_required": false, "publications_min": null,
+          "typical_background": "Senior legal leader managing a team and a domain"
+        },
+        {
+          "code": "LA7", "title": "Deputy General Counsel",
+          "scope": "Second-in-command of the entire legal organization. Covers General Counsel when absent. Owns cross-functional legal risk management.",
+          "autonomy": "very_high", "manages_people": true, "mentors_levels": ["LA4", "LA5", "LA6"],
+          "experience_min": 18, "experience_max": null,
+          "publications_required": false, "publications_min": null,
+          "typical_background": "Highly experienced legal executive"
+        },
+        {
+          "code": "LA8", "title": "General Counsel",
+          "scope": "Head of the entire legal organization. Reports to CEO. Board-level legal accountability. Final authority on all legal and compliance matters at Nexus Health.",
+          "autonomy": "very_high", "manages_people": true, "mentors_levels": ["LA5", "LA6", "LA7"],
+          "experience_min": 20, "experience_max": null,
+          "publications_required": false, "publications_min": null,
+          "typical_background": "Chief legal officer of a company"
+        }
+      ],
+      "teams": [
+        {
+          "id": "hipaa_privacy",
+          "name": "HIPAA & Privacy",
+          "description": "Owns all HIPAA compliance, PHI handling policies, breach response, and privacy program management. Works directly with engineering and product teams to ensure PHI is handled correctly.",
+          "headcount": 5,
+          "founded_year": 2018,
+          "technologies": [
+            {"name": "OneTrust", "category": "privacy_tool", "mandatory": true, "adopted": 2020, "deprecated": null, "notes": "Privacy management platform for consent and data mapping"},
+            {"name": "Relativity", "category": "legal_tool", "mandatory": false, "adopted": 2021, "deprecated": null, "notes": "eDiscovery platform for breach investigations"}
+          ],
+          "projects": [
+            {"name": "HIPAA Compliance Audit Program", "status": "active", "start": 2018, "end": null, "description": "Annual internal HIPAA audit covering all systems handling PHI"},
+            {"name": "PHI Data Mapping", "status": "completed", "start": 2020, "end": 2021, "description": "Comprehensive mapping of all PHI flows across Nexus Health systems"},
+            {"name": "Breach Response Playbook", "status": "completed", "start": 2021, "end": 2022, "description": "Documented and tested breach notification and response procedures"},
+            {"name": "Privacy by Design Program", "status": "active", "start": 2022, "end": null, "description": "Embedding privacy review into product development lifecycle for all new features handling PHI"}
+          ],
+          "internal_collaborations": ["Regulatory Affairs", "Application Security", "Compliance & Audit", "All engineering teams"],
+          "external_collaborations": ["HHS Office for Civil Rights", "State attorneys general", "Outside HIPAA counsel"]
+        },
+        {
+          "id": "regulatory_affairs",
+          "name": "Regulatory Affairs",
+          "description": "Manages FDA, CMS, and state insurance regulatory relationships. Monitors regulatory changes affecting Nexus Health products. Supports product teams on regulatory strategy.",
+          "headcount": 4,
+          "founded_year": 2019,
+          "technologies": [
+            {"name": "Veeva Vault", "category": "regulatory_tool", "mandatory": false, "adopted": 2022, "deprecated": null, "notes": "Document management for regulatory submissions"},
+            {"name": "Outlook", "category": "tooling", "mandatory": true, "adopted": 2019, "deprecated": null, "notes": "Primary communication tool"}
+          ],
+          "projects": [
+            {"name": "CMS Interoperability Rule Compliance", "status": "completed", "start": 2020, "end": 2022, "description": "Ensured all patient data APIs comply with CMS interoperability and prior authorization rules"},
+            {"name": "FDA SaMD Classification", "status": "active", "start": 2022, "end": null, "description": "Classifying Clinical AI Lab models under FDA Software as a Medical Device framework"},
+            {"name": "State Insurance Regulatory Tracker", "status": "active", "start": 2021, "end": null, "description": "Monitoring and analyzing state-level insurance regulation changes affecting Nexus Health operations"}
+          ],
+          "internal_collaborations": ["HIPAA & Privacy", "Clinical AI Lab", "Legal Contracts & Commercial"],
+          "external_collaborations": ["FDA", "CMS", "State insurance commissioners"]
+        },
+        {
+          "id": "contracts_commercial",
+          "name": "Contracts & Commercial",
+          "description": "Negotiates and manages all commercial contracts — customer MSAs, vendor agreements, data use agreements, and business associate agreements required for HIPAA compliance",
+          "headcount": 5,
+          "founded_year": 2018,
+          "technologies": [
+            {"name": "Ironclad", "category": "contract_tool", "mandatory": true, "adopted": 2021, "deprecated": null, "notes": "Contract lifecycle management platform"},
+            {"name": "Onit", "category": "contract_tool", "mandatory": true, "adopted": 2018, "deprecated": 2021, "notes": "Replaced by Ironclad in 2021 for better workflow automation"}
+          ],
+          "projects": [
+            {"name": "BAA Standardization", "status": "completed", "start": 2019, "end": 2020, "description": "Standardized Business Associate Agreement templates for all vendor relationships involving PHI"},
+            {"name": "Contract Automation", "status": "active", "start": 2022, "end": null, "description": "Self-service contract generation for standard MSA and DUA templates via Ironclad"},
+            {"name": "Data Use Agreement Framework", "status": "completed", "start": 2021, "end": 2022, "description": "Legal framework for all data sharing arrangements with research and pharma partners"}
+          ],
+          "internal_collaborations": ["HIPAA & Privacy", "Customer Success", "Regulatory Affairs"],
+          "external_collaborations": ["Enterprise payer clients", "Hospital system clients", "Pharma partners", "Outside commercial counsel"]
+        },
+        {
+          "id": "ip_patents",
+          "name": "IP & Patents",
+          "description": "Protects Nexus Health's intellectual property through patents, trade secrets, and copyright. Manages IP in commercial agreements and monitors for infringement.",
+          "headcount": 3,
+          "founded_year": 2020,
+          "technologies": [
+            {"name": "Anaqua", "category": "ip_tool", "mandatory": true, "adopted": 2020, "deprecated": null, "notes": "IP management platform for patent docketing and prosecution tracking"}
+          ],
+          "projects": [
+            {"name": "ML Model Patent Program", "status": "active", "start": 2021, "end": null, "description": "Systematic identification and patenting of novel ML architectures developed by Clinical AI Lab and Claims AI"},
+            {"name": "IP Due Diligence Framework", "status": "completed", "start": 2020, "end": 2021, "description": "Standard process for IP review in vendor selection and partnership agreements"}
+          ],
+          "internal_collaborations": ["Clinical AI Lab", "ML Platform", "Contracts & Commercial"],
+          "external_collaborations": ["Outside patent prosecution counsel", "USPTO"]
+        }
+      ]
+    },
+    {
+      "id": "operations",
+      "name": "Operations",
+      "leveling_track": "operations",
+      "description": "Clinical program operations, payer relations, healthcare data operations, and customer success — the teams that run and support Nexus Health's business",
+      "levels": [
+        {
+          "code": "OA1", "title": "Operations Analyst",
+          "scope": "Data analysis, reporting, and process support under supervision. Executes defined operational tasks.",
+          "autonomy": "low", "manages_people": false, "mentors_levels": [],
+          "experience_min": 0, "experience_max": 3,
+          "publications_required": false, "publications_min": null,
+          "typical_background": "Entry-level with analytical aptitude"
+        },
+        {
+          "code": "OA2", "title": "Senior Analyst",
+          "scope": "Owns analysis workstreams independently. Coordinates cross-functional work. Identifies process improvement opportunities.",
+          "autonomy": "moderate", "manages_people": false, "mentors_levels": ["OA1"],
+          "experience_min": 2, "experience_max": 5,
+          "publications_required": false, "publications_min": null,
+          "typical_background": "3-5 years analytical or operational experience"
+        },
+        {
+          "code": "OA3", "title": "Lead Analyst",
+          "scope": "Leads a process or program end-to-end. Manages junior analysts. Accountable for program outcomes.",
+          "autonomy": "high", "manages_people": false, "mentors_levels": ["OA1", "OA2"],
+          "experience_min": 4, "experience_max": 7,
+          "publications_required": false, "publications_min": null,
+          "typical_background": "Experienced analytical leader in a healthcare or operations context"
+        },
+        {
+          "code": "OA4", "title": "Manager",
+          "scope": "Owns a function or program end-to-end. Manages a team of 3-6 analysts. P&L-adjacent accountability.",
+          "autonomy": "high", "manages_people": true, "mentors_levels": ["OA1", "OA2", "OA3"],
+          "experience_min": 5, "experience_max": 10,
+          "publications_required": false, "publications_min": null,
+          "typical_background": "People manager with operational domain expertise"
+        },
+        {
+          "code": "OA5", "title": "Senior Manager",
+          "scope": "Manages multiple functions or programs. Team of 6-12. Significant cross-functional influence.",
+          "autonomy": "very_high", "manages_people": true, "mentors_levels": ["OA2", "OA3", "OA4"],
+          "experience_min": 8, "experience_max": 14,
+          "publications_required": false, "publications_min": null,
+          "typical_background": "Seasoned operations leader managing managers"
+        },
+        {
+          "code": "OA6", "title": "Director",
+          "scope": "Department-level ownership. Accountable for multiple functions and their outcomes. Contributes to business strategy.",
+          "autonomy": "very_high", "manages_people": true, "mentors_levels": ["OA3", "OA4", "OA5"],
+          "experience_min": 12, "experience_max": 20,
+          "publications_required": false, "publications_min": null,
+          "typical_background": "Director-level healthcare operations leader"
+        },
+        {
+          "code": "OA7", "title": "Senior Director",
+          "scope": "Cross-department accountability. Owns cross-functional strategic initiatives. VP-adjacent in decision-making.",
+          "autonomy": "very_high", "manages_people": true, "mentors_levels": ["OA4", "OA5", "OA6"],
+          "experience_min": 15, "experience_max": null,
+          "publications_required": false, "publications_min": null,
+          "typical_background": "Senior healthcare operations executive"
+        },
+        {
+          "code": "OA8", "title": "VP Operations",
+          "scope": "Organization-wide operational strategy. Reports to COO or CEO. Accountable for operational efficiency and scalability across all of Nexus Health.",
+          "autonomy": "very_high", "manages_people": true, "mentors_levels": ["OA5", "OA6", "OA7"],
+          "experience_min": 18, "experience_max": null,
+          "publications_required": false, "publications_min": null,
+          "typical_background": "C-suite adjacent healthcare operations leader"
+        }
+      ],
+      "teams": [
+        {
+          "id": "clinical_program_operations",
+          "name": "Clinical Program Operations",
+          "description": "Manages clinical programs including care management, disease management, and quality improvement programs delivered to health system and payer clients",
+          "headcount": 14,
+          "founded_year": 2018,
+          "technologies": [
+            {"name": "Salesforce", "category": "crm", "mandatory": true, "adopted": 2018, "deprecated": null, "notes": "Program management and client reporting"},
+            {"name": "SQL", "category": "language", "mandatory": true, "adopted": 2018, "deprecated": null, "notes": "Data extraction for program analytics"},
+            {"name": "Excel", "category": "tooling", "mandatory": true, "adopted": 2018, "deprecated": null, "notes": "Operational reporting and client deliverables"},
+            {"name": "Tableau", "category": "bi_tool", "mandatory": false, "adopted": 2019, "deprecated": 2022, "notes": "Replaced by Looker for client dashboards"},
+            {"name": "Looker", "category": "bi_tool", "mandatory": true, "adopted": 2022, "deprecated": null, "notes": "Program performance dashboards"}
+          ],
+          "projects": [
+            {"name": "Diabetes Care Management Program", "status": "active", "start": 2019, "end": null, "description": "Population-based diabetes management program for 3 payer clients covering 200k members"},
+            {"name": "Readmission Reduction Program", "status": "active", "start": 2020, "end": null, "description": "Coordinated care intervention program using ML model outputs to prevent 30-day readmissions"},
+            {"name": "Quality Measure Reporting Automation", "status": "completed", "start": 2021, "end": 2022, "description": "Automated HEDIS and CMS quality measure reporting for client health plans"}
+          ],
+          "internal_collaborations": ["Customer Success", "Clinical AI Lab", "Data & Analytics Engineering"],
+          "external_collaborations": ["Health plan clients", "Hospital system clients", "Care managers"]
+        },
+        {
+          "id": "payer_relations",
+          "name": "Payer Relations",
+          "description": "Manages relationships with insurance company clients — contract compliance, value demonstration, and strategic account planning for payer partnerships",
+          "headcount": 8,
+          "founded_year": 2018,
+          "technologies": [
+            {"name": "Salesforce", "category": "crm", "mandatory": true, "adopted": 2018, "deprecated": null, "notes": "Account management and relationship tracking"},
+            {"name": "SQL", "category": "language", "mandatory": false, "adopted": 2020, "deprecated": null, "notes": "Pulling performance data for client QBRs"},
+            {"name": "Excel", "category": "tooling", "mandatory": true, "adopted": 2018, "deprecated": null, "notes": "Financial modeling and contract analysis"},
+            {"name": "PowerPoint", "category": "tooling", "mandatory": true, "adopted": 2018, "deprecated": null, "notes": "Executive presentation development for client meetings"}
+          ],
+          "projects": [
+            {"name": "Payer Scorecard Program", "status": "active", "start": 2019, "end": null, "description": "Quarterly performance scorecard for all payer clients measuring program outcomes vs. contract targets"},
+            {"name": "Value-Based Contract Transition", "status": "active", "start": 2022, "end": null, "description": "Transitioning legacy fee-for-service contracts to value-based arrangements with outcome guarantees"}
+          ],
+          "internal_collaborations": ["Customer Success", "Contracts & Commercial", "Clinical Program Operations", "Data & Analytics Engineering"],
+          "external_collaborations": ["Regional and national payer clients", "Blues plans", "Medicaid managed care organizations"]
+        },
+        {
+          "id": "healthcare_data_operations",
+          "name": "Healthcare Data Operations",
+          "description": "Manages the operational side of data ingestion — onboarding new data sources, resolving data quality issues, and managing relationships with data feed vendors and health systems",
+          "headcount": 10,
+          "founded_year": 2019,
+          "technologies": [
+            {"name": "SQL", "category": "language", "mandatory": true, "adopted": 2019, "deprecated": null, "notes": "Primary language for data investigation and quality checks"},
+            {"name": "Python", "category": "language", "mandatory": false, "adopted": 2020, "deprecated": null, "notes": "Automation scripts for data monitoring"},
+            {"name": "FHIR R4", "category": "healthcare_standard", "mandatory": true, "adopted": 2021, "deprecated": null, "notes": "Understanding required for new data source onboarding"},
+            {"name": "HL7 v2", "category": "healthcare_standard", "mandatory": true, "adopted": 2019, "deprecated": null, "notes": "Primary inbound format for hospital data feeds"},
+            {"name": "EDI 837", "category": "healthcare_standard", "mandatory": true, "adopted": 2019, "deprecated": null, "notes": "Claims data format from payers"},
+            {"name": "Snowflake", "category": "database", "mandatory": true, "adopted": 2020, "deprecated": null, "notes": "Primary analytics data access for data quality investigation"},
+            {"name": "Jira", "category": "tooling", "mandatory": true, "adopted": 2019, "deprecated": null, "notes": "Data issue tracking and resolution workflow"}
+          ],
+          "projects": [
+            {"name": "Data Onboarding Playbook", "status": "completed", "start": 2020, "end": 2021, "description": "Standardized process for onboarding new hospital and payer data sources"},
+            {"name": "Data Quality SLA Program", "status": "active", "start": 2021, "end": null, "description": "Monitoring and reporting on data quality against contractual SLAs for all active data feeds"},
+            {"name": "Real-time Feed Monitoring", "status": "active", "start": 2022, "end": null, "description": "Automated alerting for HL7 feed failures and data anomalies from hospital system connections"}
+          ],
+          "internal_collaborations": ["Patient Data Platform", "Claims AI", "Clinical Program Operations"],
+          "external_collaborations": ["Hospital system IT departments", "Payer claims departments", "Health information exchanges"]
+        },
+        {
+          "id": "customer_success",
+          "name": "Customer Success",
+          "description": "Manages post-sales client relationships — implementation, onboarding, adoption, and ongoing success for enterprise health system and payer clients",
+          "headcount": 16,
+          "founded_year": 2018,
+          "technologies": [
+            {"name": "Salesforce", "category": "crm", "mandatory": true, "adopted": 2018, "deprecated": null, "notes": "Primary CRM for account management and health scoring"},
+            {"name": "Gainsight", "category": "cs_tool", "mandatory": true, "adopted": 2020, "deprecated": null, "notes": "Customer success platform for health scoring and playbooks"},
+            {"name": "Looker", "category": "bi_tool", "mandatory": true, "adopted": 2022, "deprecated": null, "notes": "Client-facing analytics dashboards"},
+            {"name": "SQL", "category": "language", "mandatory": false, "adopted": 2021, "deprecated": null, "notes": "Self-service data pulls for client inquiries"},
+            {"name": "Jira", "category": "tooling", "mandatory": true, "adopted": 2018, "deprecated": null, "notes": "Issue tracking for client-reported problems"}
+          ],
+          "projects": [
+            {"name": "Onboarding Standardization", "status": "completed", "start": 2019, "end": 2020, "description": "Standardized 90-day onboarding playbook for new enterprise clients"},
+            {"name": "Health Score Framework", "status": "completed", "start": 2020, "end": 2021, "description": "Gainsight-based client health scoring driving proactive intervention"},
+            {"name": "Client Portal Launch", "status": "active", "start": 2022, "end": null, "description": "Self-service portal for clients to access analytics, submit support requests, and track implementation status"}
+          ],
+          "internal_collaborations": ["Payer Relations", "Clinical Program Operations", "Healthcare Data Operations", "Member Portal"],
+          "external_collaborations": ["All enterprise clients"]
+        }
+      ]
+    },
+    {
+      "id": "security",
+      "name": "Web & Application Security",
+      "leveling_track": "security",
+      "description": "Protects Nexus Health's systems, patient data, and infrastructure — application security, infrastructure security, identity management, SOC operations, and compliance",
+      "levels": [
+        {
+          "code": "SEC1", "title": "Junior Security Analyst",
+          "scope": "Alert triage, basic incident response, security tool monitoring under supervision.",
+          "autonomy": "low", "manages_people": false, "mentors_levels": [],
+          "experience_min": 0, "experience_max": 2,
+          "publications_required": false, "publications_min": null,
+          "typical_background": "Entry level, often from IT support or bootcamp with security certifications"
+        },
+        {
+          "code": "SEC2", "title": "Security Analyst",
+          "scope": "Independent threat hunting and vulnerability scanning. Owns incident response for defined threat categories. Operates and tunes security tools.",
+          "autonomy": "moderate", "manages_people": false, "mentors_levels": ["SEC1"],
+          "experience_min": 2, "experience_max": 5,
+          "publications_required": false, "publications_min": null,
+          "typical_background": "2-5 years security experience, usually CompTIA Security+ or similar"
+        },
+        {
+          "code": "SEC3", "title": "Senior Security Analyst",
+          "scope": "Leads incident response for complex threats. Owns security tool procurement and configuration for a domain. Develops detection rules and playbooks.",
+          "autonomy": "high", "manages_people": false, "mentors_levels": ["SEC1", "SEC2"],
+          "experience_min": 4, "experience_max": 8,
+          "publications_required": false, "publications_min": null,
+          "typical_background": "CISSP or CISM holder, specialized in a security domain"
+        },
+        {
+          "code": "SEC4", "title": "Security Engineer",
+          "scope": "Builds security tooling and integrates security controls into the engineering lifecycle. Automates security testing and remediation. Bridges security and engineering teams.",
+          "autonomy": "high", "manages_people": false, "mentors_levels": ["SEC2", "SEC3"],
+          "experience_min": 4, "experience_max": 8,
+          "publications_required": false, "publications_min": null,
+          "typical_background": "Software engineer who pivoted to security or security analyst with coding skills"
+        },
+        {
+          "code": "SEC5", "title": "Senior Security Engineer",
+          "scope": "Designs security architecture for products and platforms. Leads security review for new system designs. Defines security standards for engineering teams.",
+          "autonomy": "very_high", "manages_people": false, "mentors_levels": ["SEC3", "SEC4"],
+          "experience_min": 7, "experience_max": 12,
+          "publications_required": false, "publications_min": null,
+          "typical_background": "Deep technical security professional with architecture experience"
+        },
+        {
+          "code": "SEC6", "title": "Lead Security Engineer",
+          "scope": "Cross-organization security architecture leadership. Defines security standards adopted org-wide. Technical lead for major security programs.",
+          "autonomy": "very_high", "manages_people": false, "mentors_levels": ["SEC4", "SEC5"],
+          "experience_min": 10, "experience_max": 16,
+          "publications_required": false, "publications_min": null,
+          "typical_background": "Senior technical security leader with org-wide credibility"
+        },
+        {
+          "code": "SEC7", "title": "Security Architect",
+          "scope": "Owns Nexus Health's entire security architecture vision. Defines zero-trust implementation strategy. Advises CISO on technical security direction. Cross-industry engagement.",
+          "autonomy": "very_high", "manages_people": false, "mentors_levels": ["SEC5", "SEC6"],
+          "experience_min": 14, "experience_max": null,
+          "publications_required": false, "publications_min": null,
+          "typical_background": "Rare technical security expert, equivalent to L7 in engineering"
+        },
+        {
+          "code": "SEC8", "title": "Chief Information Security Officer",
+          "scope": "Head of security organization. Reports to CEO. Board-level security accountability. Owns Nexus Health's entire security posture and regulatory compliance (HIPAA, SOC2, HITRUST).",
+          "autonomy": "very_high", "manages_people": true, "mentors_levels": ["SEC6", "SEC7"],
+          "experience_min": 18, "experience_max": null,
+          "publications_required": false, "publications_min": null,
+          "typical_background": "CISO-level executive"
+        }
+      ],
+      "teams": [
+        {
+          "id": "application_security",
+          "name": "Application Security",
+          "description": "Secures Nexus Health applications through static and dynamic analysis, penetration testing, secure code review, and embedding security into the software development lifecycle",
+          "headcount": 6,
+          "founded_year": 2019,
+          "technologies": [
+            {"name": "Python", "category": "language", "mandatory": true, "adopted": 2019, "deprecated": null, "notes": "Security automation and custom tooling"},
+            {"name": "Veracode", "category": "sast_tool", "mandatory": true, "adopted": 2019, "deprecated": null, "notes": "Static application security testing in CI/CD"},
+            {"name": "Burp Suite", "category": "dast_tool", "mandatory": true, "adopted": 2019, "deprecated": null, "notes": "Dynamic application security testing and penetration testing"},
+            {"name": "OWASP ZAP", "category": "dast_tool", "mandatory": false, "adopted": 2020, "deprecated": null, "notes": "Automated DAST in CI pipeline"},
+            {"name": "GitHub Advanced Security", "category": "sast_tool", "mandatory": true, "adopted": 2021, "deprecated": null, "notes": "Secret scanning and code QL analysis in GitHub"},
+            {"name": "Semgrep", "category": "sast_tool", "mandatory": false, "adopted": 2022, "deprecated": null, "notes": "Custom security rules for Nexus Health-specific patterns"}
+          ],
+          "projects": [
+            {"name": "SDLC Security Integration", "status": "completed", "start": 2020, "end": 2022, "description": "Embedded SAST and secret scanning into all GitHub repositories and CI/CD pipelines"},
+            {"name": "Annual Penetration Testing Program", "status": "active", "start": 2019, "end": null, "description": "Annual third-party penetration tests of all external-facing applications and APIs"},
+            {"name": "Bug Bounty Program", "status": "active", "start": 2022, "end": null, "description": "External bug bounty program for responsible disclosure of application vulnerabilities"}
+          ],
+          "internal_collaborations": ["Infrastructure Security", "All engineering teams", "Compliance & Audit"],
+          "external_collaborations": ["Third-party penetration testing firms", "HackerOne (bug bounty)"]
+        },
+        {
+          "id": "infrastructure_security",
+          "name": "Infrastructure Security",
+          "description": "Secures Nexus Health's cloud and network infrastructure — AWS security posture, network segmentation, vulnerability management, and cloud configuration compliance",
+          "headcount": 5,
+          "founded_year": 2019,
+          "technologies": [
+            {"name": "AWS GuardDuty", "category": "cloud_security", "mandatory": true, "adopted": 2019, "deprecated": null, "notes": "Threat detection for AWS accounts"},
+            {"name": "AWS Security Hub", "category": "cloud_security", "mandatory": true, "adopted": 2020, "deprecated": null, "notes": "Centralized security findings aggregation"},
+            {"name": "Terraform", "category": "iac", "mandatory": true, "adopted": 2020, "deprecated": null, "notes": "Infrastructure as code — security reviews all Terraform changes"},
+            {"name": "Python", "category": "language", "mandatory": true, "adopted": 2019, "deprecated": null, "notes": "Security automation and AWS Lambda-based security controls"},
+            {"name": "AWS Config", "category": "cloud_security", "mandatory": true, "adopted": 2019, "deprecated": null, "notes": "Continuous configuration compliance monitoring"},
+            {"name": "Prisma Cloud", "category": "cspm", "mandatory": true, "adopted": 2021, "deprecated": null, "notes": "Cloud security posture management"},
+            {"name": "Qualys", "category": "vulnerability_management", "mandatory": true, "adopted": 2019, "deprecated": null, "notes": "Vulnerability scanning across all EC2 instances"}
+          ],
+          "projects": [
+            {"name": "AWS Landing Zone", "status": "completed", "start": 2020, "end": 2021, "description": "Multi-account AWS structure with security guardrails and centralized logging"},
+            {"name": "Zero Trust Network Architecture", "status": "active", "start": 2022, "end": null, "description": "Eliminating implicit network trust, implementing microsegmentation and least-privilege access"},
+            {"name": "Vulnerability Management Program", "status": "active", "start": 2019, "end": null, "description": "Continuous vulnerability scanning with SLA-based remediation tracking"}
+          ],
+          "internal_collaborations": ["Identity & Access Management", "Application Security", "Compliance & Audit", "ML Platform"],
+          "external_collaborations": []
+        },
+        {
+          "id": "iam",
+          "name": "Identity & Access Management",
+          "description": "Owns all identity, authentication, and authorization systems — SSO, MFA, privileged access management, and access lifecycle for employees, contractors, and service accounts",
+          "headcount": 5,
+          "founded_year": 2019,
+          "technologies": [
+            {"name": "Okta", "category": "iam_tool", "mandatory": true, "adopted": 2019, "deprecated": null, "notes": "Primary IdP for SSO and MFA across all applications"},
+            {"name": "AWS IAM", "category": "cloud_iam", "mandatory": true, "adopted": 2019, "deprecated": null, "notes": "AWS resource access management"},
+            {"name": "CyberArk", "category": "pam", "mandatory": true, "adopted": 2021, "deprecated": null, "notes": "Privileged access management for admin and service accounts"},
+            {"name": "Python", "category": "language", "mandatory": false, "adopted": 2020, "deprecated": null, "notes": "Access lifecycle automation and provisioning scripts"},
+            {"name": "SCIM", "category": "protocol", "mandatory": true, "adopted": 2020, "deprecated": null, "notes": "Automated user provisioning and deprovisioning to SaaS tools"},
+            {"name": "Active Directory", "category": "directory", "mandatory": true, "adopted": 2019, "deprecated": null, "notes": "On-premises directory, being migrated to Okta-native"}
+          ],
+          "projects": [
+            {"name": "Okta Rollout", "status": "completed", "start": 2019, "end": 2020, "description": "Organization-wide SSO and MFA rollout covering all SaaS and internal applications"},
+            {"name": "Privileged Access Management", "status": "completed", "start": 2021, "end": 2022, "description": "CyberArk deployment for all privileged accounts, eliminating standing admin access"},
+            {"name": "Zero Standing Privilege Initiative", "status": "active", "start": 2023, "end": null, "description": "Just-in-time access provisioning eliminating all permanent privileged access"}
+          ],
+          "internal_collaborations": ["Infrastructure Security", "Application Security", "Compliance & Audit", "All teams (access reviews)"],
+          "external_collaborations": []
+        },
+        {
+          "id": "soc",
+          "name": "Security Operations Center",
+          "description": "24/7 monitoring, alert triage, incident response, and threat hunting to detect and respond to security events across Nexus Health environments",
+          "headcount": 10,
+          "founded_year": 2020,
+          "technologies": [
+            {"name": "Splunk", "category": "siem", "mandatory": true, "adopted": 2020, "deprecated": null, "notes": "Primary SIEM for log aggregation, correlation, and alerting"},
+            {"name": "CrowdStrike", "category": "edr", "mandatory": true, "adopted": 2020, "deprecated": null, "notes": "Endpoint detection and response across all managed devices"},
+            {"name": "Jira", "category": "incident_tracking", "mandatory": true, "adopted": 2020, "deprecated": null, "notes": "Security incident tracking and workflow"},
+            {"name": "Phantom (Splunk SOAR)", "category": "soar", "mandatory": false, "adopted": 2021, "deprecated": null, "notes": "Security orchestration and automated response playbooks"},
+            {"name": "Python", "category": "language", "mandatory": false, "adopted": 2021, "deprecated": null, "notes": "Detection rule development and SOAR playbook scripting"},
+            {"name": "Carbon Black", "category": "edr", "mandatory": true, "adopted": 2020, "deprecated": 2021, "notes": "Replaced by CrowdStrike in 2021 for better detection capabilities"}
+          ],
+          "projects": [
+            {"name": "SOC Launch", "status": "completed", "start": 2020, "end": 2021, "description": "Built 24/7 SOC capability with Splunk SIEM, alert playbooks, and on-call rotation"},
+            {"name": "Threat Intelligence Program", "status": "active", "start": 2021, "end": null, "description": "Proactive threat intelligence collection focused on healthcare sector threats and ransomware groups"},
+            {"name": "Insider Threat Detection", "status": "active", "start": 2022, "end": null, "description": "Behavioral analytics for detecting anomalous access patterns that may indicate insider threats"}
+          ],
+          "internal_collaborations": ["Infrastructure Security", "Application Security", "Identity & Access Management"],
+          "external_collaborations": ["HC3 (Health-ISAC)", "FBI Cyber Division (incident response)"]
+        },
+        {
+          "id": "compliance_audit",
+          "name": "Compliance & Audit",
+          "description": "Manages Nexus Health's compliance certifications and audit programs — HIPAA, SOC 2 Type II, HITRUST CSF, and internal audit. Works with all teams to maintain compliance posture.",
+          "headcount": 7,
+          "founded_year": 2018,
+          "technologies": [
+            {"name": "Vanta", "category": "compliance_tool", "mandatory": true, "adopted": 2021, "deprecated": null, "notes": "Continuous compliance monitoring and evidence collection for SOC 2 and HITRUST"},
+            {"name": "OneTrust", "category": "privacy_tool", "mandatory": false, "adopted": 2022, "deprecated": null, "notes": "Shared with HIPAA & Privacy team for risk and vendor management"},
+            {"name": "Jira", "category": "tooling", "mandatory": true, "adopted": 2018, "deprecated": null, "notes": "Audit finding tracking and remediation workflow"},
+            {"name": "Excel", "category": "tooling", "mandatory": true, "adopted": 2018, "deprecated": null, "notes": "Control evidence collection and audit workpapers"},
+            {"name": "Tugboat Logic", "category": "compliance_tool", "mandatory": true, "adopted": 2018, "deprecated": 2021, "notes": "Replaced by Vanta in 2021 for better automation"}
+          ],
+          "projects": [
+            {"name": "SOC 2 Type II", "status": "active", "start": 2018, "end": null, "description": "Annual SOC 2 Type II audit covering Security, Availability, and Confidentiality trust service criteria"},
+            {"name": "HITRUST Certification", "status": "active", "start": 2020, "end": null, "description": "Biennial HITRUST CSF certification required for enterprise payer client contracts"},
+            {"name": "Vendor Risk Management Program", "status": "active", "start": 2021, "end": null, "description": "Third-party risk assessment for all vendors with access to PHI or Nexus Health systems"}
+          ],
+          "internal_collaborations": ["HIPAA & Privacy", "Infrastructure Security", "Application Security", "IAM", "All teams"],
+          "external_collaborations": ["HITRUST assessors", "SOC 2 auditors", "External audit firms"]
+        }
+      ]
+    }
+  ]
+}

@@ -1,10 +1,10 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 from langchain_core.messages import HumanMessage
 from langgraph.types import Command
 import uuid
-
 from app.agents.jd_builder.graph import chat_bot
+from app.core.auth_dependency import verify_token
 
 router = APIRouter(prefix="/jd-builder", tags=["jd-builder"])
 
@@ -18,7 +18,7 @@ class MessageRequest(BaseModel):
 
 
 @router.post("/sessions")
-def start_session(payload: StartSessionRequest):
+def start_session(payload: StartSessionRequest, user_email: str = Depends(verify_token)):
     session_id = str(uuid.uuid4())
     config = {"configurable": {"thread_id": session_id}}
 
@@ -31,7 +31,7 @@ def start_session(payload: StartSessionRequest):
 
 
 @router.post("/sessions/{session_id}/message")
-def send_message(session_id: str, payload: MessageRequest):
+def send_message(session_id: str, payload: MessageRequest, user_email: str = Depends(verify_token)):
     config = {"configurable": {"thread_id": session_id}}
 
     state = chat_bot.get_state(config)
