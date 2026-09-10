@@ -108,3 +108,15 @@ class NexusTeamProject(NexusBase):
     description = Column(Text)
 
     team = relationship("NexusTeam", back_populates="projects")
+
+class NexusHistoricalJD(NexusBase):
+    __tablename__ = "historical_jds"
+
+    id = Column(Integer, primary_key=True)
+    jd_id = Column(String(255), nullable=False, unique=True)
+    team_id = Column(Integer, ForeignKey("teams.id"), nullable=False)
+    level_code = Column(String(20), nullable=False)
+    year_posted = Column(Integer, nullable=False)
+    job_title = Column(String(255), nullable=True)   # ← add this
+    is_current = Column(Boolean, default=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())

@@ -8,7 +8,7 @@ import hashlib
 # ─── Constants ────────────────────────────────────────────────────────────────
 
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 15    # short-lived — refresh token handles long sessions
+ACCESS_TOKEN_EXPIRE_MINUTES = 60    # short-lived — refresh token handles long sessions
 REFRESH_TOKEN_EXPIRE_DAYS = 7       # long-lived — stored in DB, can be revoked
 
 # bcrypt hashing context — used for passwords

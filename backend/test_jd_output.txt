@@ -1,0 +1,36 @@
+**L4 Staff Engineer — Healthcare AI Engineering**  
+**Nexus Health**  
+
+**About Nexus Health**  
+Nexus Health is a healthcare technology company that helps hospitals, health systems, and insurance payers make better clinical and operational decisions through data and AI. We build intelligent platforms connecting clinical workflows, healthcare data management, and analytics — serving organizations that collectively support millions of patients. Our teams work at the intersection of machine learning, healthcare data standards, and large-scale distributed systems, building products that directly impact how care is delivered and managed across the healthcare ecosystem.  
+
+**About the Role**  
+As a Staff Engineer in Healthcare AI Engineering, you will lead the technical direction of a team focused on integrating machine learning systems with healthcare data pipelines. Your work will involve designing and owning scalable, compliant API layers that connect diverse healthcare data sources with real-time ML inference services. You will drive architecture decisions across teams to ensure that our solutions meet clinical data standards and operational requirements. This role requires deep expertise in healthcare interoperability, data processing, and AI system integration within complex healthcare environments.  
+
+**What You Will Work On**  
+- Design and build scalable API bridges between large-scale healthcare data processing systems and machine learning inference services.  
+- Lead migration efforts to implement healthcare data standards such as FHIR R4 for improved compliance and interoperability.  
+- Own the development and deployment of ML-based systems that enhance fraud detection and other clinical operational processes.  
+- Drive cross-team architecture and design decisions to align with long-term technical roadmaps and organizational goals.  
+- Mentor junior engineers and provide technical guidance on best practices related to healthcare data standards and AI engineering.  
+
+**What We Are Looking For**  
+
+*Required:*  
+- **FHIR R4:** Essential for ensuring patient data outputs comply with healthcare interoperability standards.  
+- **HL7 v2:** Critical for integration with legacy healthcare messaging systems.  
+- **Java:** Core language for developing and maintaining large-scale healthcare data processing systems.  
+- **Kafka:** Used for building real-time data pipelines and streaming healthcare data reliably.  
+- **PostgreSQL:** Required for managing structured healthcare data storage with reliability and scalability.  
+- **Python:** Key for developing machine learning inference services and data integration scripts.  
+- **REST APIs:** Fundamental for designing interoperable and scalable service interfaces.  
+- **Experience:** 7-12 years of relevant engineering experience in healthcare or related industries.  
+
+*Preferred:*  
+- **AWS S3:** For scalable cloud storage of healthcare datasets.  
+- **AWS SageMaker:** To develop, train, and deploy machine learning models in a managed environment.  
+- **Docker:** For containerizing applications to ensure consistent deployment and scalability.  
+- **Kubernetes:** To orchestrate containerized services and manage distributed system reliability.  
+
+**Your Scope at Nexus Health**  
+In this role, you will have broad ownership of the technical direction for your team’s core systems and features, with significant autonomy to make architectural decisions. You will represent your team in cross-organizational design discussions, ensuring alignment with company-wide technical strategies. While you will not have direct people management responsibilities, you will mentor and guide junior engineers to help grow their skills and impact. Your work will shape multi-quarter technical roadmaps and influence how healthcare AI solutions are built and maintained at Nexus Health.

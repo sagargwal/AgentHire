@@ -1,0 +1,74 @@
+L4 Staff Engineer — Healthcare AI Engineering
+---
+You are writing an external-facing job description for Nexus Health, a healthcare technology company.
+
+Write a professional job description for this role. Follow all rules carefully.
+
+═══ ROLE DETAILS ═══
+Job Title: L4 Staff Engineer — Healthcare AI Engineering
+Level Code: L4
+Level Title: Staff Engineer
+Domain: Healthcare AI Engineering
+Year: 2022
+
+═══ LEVEL DEFINITION ═══
+Scope: Drives technical direction for an entire team. Makes cross-team architecture decisions. Represents team in org-wide design forums. Owns multi-quarter technical roadmaps at team level.
+Experience required: 7-12 years
+Autonomy: very_high
+Manages people: No — individual contributor role.
+Mentors: L2, L3
+Typical background: Deep technical leader, often mistaken for engineering manager but stays IC
+
+═══ TECHNOLOGY STACK (use ONLY these — do not add or remove anything) ═══
+Required: FHIR R4, HL7 v2, Java, Kafka, PostgreSQL, Python, REST APIs
+Preferred:
+- AWS S3, AWS SageMaker, Docker, Kubernetes
+
+═══ WORK CONTEXT IN 2022 ═══
+  - Claims-ML Integration Layer: API bridge between legacy Java claims system and Python ML inference services
+  - Claims Fraud Detection v2: ML-based fraud scoring model replacing rule engine, 40% improvement in detection rate
+  - FHIR R4 Compliance Migration: Migrated all patient data outputs from XML to FHIR R4 format for CMS compliance
+
+═══ STRUCTURE TO FOLLOW ═══
+
+Section 1 — About Nexus Health (use this exact text, do not change it):
+Nexus Health is a healthcare technology company that helps hospitals, health systems, and insurance payers make better clinical and operational decisions through data and AI. We build intelligent platforms connecting clinical workflows, healthcare data management, and analytics — serving organizations that collectively support millions of patients. Our teams work at the intersection of machine learning, healthcare data standards, and large-scale distributed systems, building products that directly impact how care is delivered and managed across the healthcare ecosystem.
+
+Section 2 — About the Role (3-4 sentences):
+Describe what this person will do and own. Be specific about the TYPE of work 
+(ML systems, data pipelines, clinical research, security architecture etc.) 
+but do NOT name internal systems, specific clients, or internal project names.
+Instead of "Real-time Inference Migration" say "real-time ML inference systems".
+Instead of "Epic and Cerner" say "hospital system integrations".
+Instead of "legacy Java claims system" say "large-scale healthcare data processing systems".
+
+Section 3 — What You Will Work On (4-5 bullet points):
+Describe real responsibilities based on the work context above.
+Keep descriptions at the category level — what TYPE of work, not internal names.
+Use active verbs: Design, Build, Own, Lead, Drive, Define, Maintain.
+
+Section 4 — What We Are Looking For:
+Required:
+List each required technology as a bullet with one line explaining WHY it matters for this role.
+Add the experience range: "7-12 years"
+
+
+Preferred:
+List each preferred technology as a bullet.
+
+Section 5 — Your Scope at L4 (3-4 sentences):
+Describe what this level means at Nexus Health in plain English — 
+ownership, autonomy, mentorship, decision-making authority.
+Do NOT use the level code here — describe the scope in human terms.
+
+═══ RULES ═══
+1. NEVER name internal projects — describe the category of work instead
+2. NEVER name specific hospital clients — say "hospital system integrations" or "healthcare clients"
+3. NEVER reveal internal system architecture details
+4. ONLY use technologies from the Required and Preferred lists above — do not add anything
+5. Experience range must be exactly: 7-12 years
+6. Publications rule: Do not mention publications
+7. Length: 400-500 words total
+8. Tone: direct and professional — not marketing language, not generic corporate speak
+
+Write only the job description. No preamble, no explanation.

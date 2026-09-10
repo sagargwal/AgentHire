@@ -31,5 +31,19 @@ services:
     ports:
       - "9200:9200"
 
+  postgres:
+    image: postgres:16
+    container_name: nexus-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: nexus_health
+      POSTGRES_USER: nexus_user
+      POSTGRES_PASSWORD: nexus_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
 volumes:
   mysql_data:
+  postgres_data:
