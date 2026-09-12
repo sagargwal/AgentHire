@@ -360,41 +360,85 @@ def get_level(level_code: str, department_name: str) -> str:
 @tool
 def query_company_database(sql: str) -> str:
     """
-    Execute a read-only SQL query against the Nexus Health company
+     Execute a read-only SQL query against the Nexus Health company
     knowledge database. Use this for any structured question about
-    the company that get_team_context and get_level do not cover —
-    comparisons across teams, historical analysis, collaboration
-    patterns, project timelines, or any custom aggregation.
+    the company that get_team_context, get_level, get_levels_for_team,
+    and find_team_by_project do not cover.
 
-    The database schema:
-    - companies (id, name, industry, founded_year, description)
-    - departments (id, company_id, name, leveling_track, description)
-    - levels (id, department_id, level_code, level_title, scope,
-              autonomy, manages_people, mentors_levels JSONB,
-              experience_min, experience_max, publications_required,
-              publications_min, typical_background)
-    - teams (id, department_id, team_key, name, description,
-             headcount, founded_year,
-             internal_collaborations JSONB,
-             external_collaborations JSONB)
-    - team_technologies (id, team_id, name, category, is_mandatory,
-                        adopted_year, deprecated_year, notes)
-    - team_projects (id, team_id, name, status, start_year,
-                    end_year, description)
+    EXACT TABLE SCHEMAS (use these column names precisely):
 
-    TEMPORAL FILTERING for technology questions:
-    WHERE adopted_year <= YEAR
-    AND (deprecated_year IS NULL OR deprecated_year > YEAR)
+    teams:
+        id, department_id, team_key, name, description,
+        headcount, founded_year,
+        internal_collaborations (JSONB), external_collaborations (JSONB)
+
+    team_technologies:
+        id, team_id, name, category, is_mandatory,
+        adopted_year, deprecated_year, notes
+
+    team_projects:
+        id, team_id, name, status, start_year, end_year, description
+
+    levels:
+        id, department_id, level_code, level_title, scope,
+        autonomy, manages_people, mentors_levels (JSONB),
+        experience_min, experience_max, publications_required,
+        publications_min, typical_background
+
+    departments:
+        id, company_id, name, leveling_track, description
+
+    companies:
+        id, name, industry, founded_year, description
+
+    historical_jds:
+        id, jd_id, team_id, level_code, year_posted,
+        job_title, is_current
+
+    EXAMPLE QUERIES:
+    -- Which teams use Kafka?
+    SELECT t.name as team_name, tt.is_mandatory, tt.adopted_year
+    FROM team_technologies tt
+    JOIN teams t ON t.id = tt.team_id
+    WHERE tt.name = 'Kafka'
+
+    -- What levels exist for Technology department?
+    SELECT level_code, level_title, experience_min, experience_max
+    FROM levels l
+    JOIN departments d ON d.id = l.department_id
+    WHERE d.name ILIKE '%Technology%'
+    ORDER BY level_code
 
     IMPORTANT: SELECT only. Never INSERT, UPDATE, DELETE, or DROP.
+
+    Only these tables are accessible:
+    companies, departments, teams, levels,
+    team_technologies, team_projects, historical_jds
     """
+
+    # ── Security check 1: SELECT only ────────────────────────────────────
+    sql_clean = sql.strip().upper()
+    if not sql_clean.startswith("SELECT"):
+        return "Error: only SELECT queries are permitted."
+
+    # ── Security check 2: whitelist allowed tables ────────────────────────
+    BLOCKED_TERMS = {
+        "users", "refresh_tokens", "password", "token",
+        "credentials", "secrets", "auth", "hashed"
+    }
+    sql_lower = sql.lower()
+    for term in BLOCKED_TERMS:
+        if term in sql_lower:
+            return (
+                f"Error: access to '{term}' is not permitted. "
+                f"Only company knowledge tables are accessible: "
+                f"companies, departments, teams, levels, "
+                f"team_technologies, team_projects, historical_jds."
+            )
+
+    # ── Execute ───────────────────────────────────────────────────────────
     db = PostgresSession()
     try:
-        # safety — only allow SELECT
-        sql_clean = sql.strip().upper()
-        if not sql_clean.startswith("SELECT"):
-            return "Error: only SELECT queries are permitted in this tool."
-
         result = db.execute(text(sql))
         rows = result.fetchall()
         columns = list(result.keys())
@@ -402,7 +446,6 @@ def query_company_database(sql: str) -> str:
         if not rows:
             return "Query executed successfully but returned no results."
 
-        # cap at 50 rows to avoid flooding the context
         if len(rows) > 50:
             rows = rows[:50]
             truncated = True
