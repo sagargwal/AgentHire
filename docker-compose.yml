@@ -9,7 +9,7 @@ services:
       MYSQL_USER: agenthire_user
       MYSQL_PASSWORD: agenthire_pass
     ports:
-      - "3306:3306"
+      - "127.0.0.1:3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
 
@@ -18,7 +18,7 @@ services:
     container_name: agenthire-redis
     restart: always
     ports:
-      - "6379:6379"
+      - "127.0.0.1:6379:6379"
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
@@ -29,7 +29,7 @@ services:
       - xpack.security.enabled=false
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
     ports:
-      - "9200:9200"
+      - "127.0.0.1:9200:9200"
 
   postgres:
     image: postgres:16
@@ -40,7 +40,7 @@ services:
       POSTGRES_USER: nexus_user
       POSTGRES_PASSWORD: nexus_pass
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
 

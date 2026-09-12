@@ -2,6 +2,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer
 from app.routers import jd_builder
 from app.routers import auth
@@ -17,7 +18,19 @@ app = FastAPI(
     ]
 )
 
-# This is what makes the Authorize button appear in Swagger
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:3000",
+        "http://localhost:3001",
+        "https://agenthire-frontend.vercel.app",
+        "https://*.vercel.app",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 bearer_scheme = HTTPBearer()
 
 @app.get("/health", tags=["default"])
