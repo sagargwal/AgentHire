@@ -1,4 +1,27 @@
-backend/agent_hire
+# Python
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
 .env
+*.egg-info/
+
+# Virtual environments
+venv/
+backend/venv/
+backend/agent_hire/
+env/
+.venv/
+
+# Node
+node_modules/
+
+# Large data files
+backend/jd_batch_output.jsonl
+backend/jd_batch_input.jsonl
+backend/combinations.json
+backend/batch_id.txt
+
+# OS
+.DS_Store
+Thumbs.db
