@@ -84,16 +84,36 @@ def search_market_jds(query: str, seniority: str = None) -> str:
 @tool
 def finalize_jd(jd_draft: dict) -> str:
     """Call this when you believe the JD is ready to finalize. This will
-    pause and ask the recruiter for confirmation in their own words before
-    actually locking the draft. Pass the full jd_draft dict with keys:
+    pause and ask the recruiter for confirmation before saving the JD to
+    the careers page. Pass the full jd_draft dict with keys:
     title, description, skills."""
+
+    import re
+    from app.models.nexus_company import PostedJD
+    from datetime import datetime
+
+    # ── Extract title ─────────────────────────────────────────────────
     title = _extract_title(jd_draft)
 
+    # ── Extract full JD text from description field ───────────────────
+    # description contains the full formatted JD text
+    jd_text = _extract_description(jd_draft) or str(jd_draft)
+
+    # ── Extract level_code from title using regex ─────────────────────
+    # "L3 Senior Engineer — Healthcare AI Engineering" → "L3"
+    level_match = re.match(r'^(L\d+|R\d+|SEC\d+|LA\d+|OA\d+)', title)
+    level_code = level_match.group(1) if level_match else None
+
+    # ── team_key not in jd_draft — store as None (column is nullable) ─
+    team_key = None
+
+    # ── HITL interrupt ────────────────────────────────────────────────
     human_response = interrupt(
         f"Ready to finalize '{title}'. Reply with your decision — approve, "
         f"request changes, or reject — in your own words."
     )
 
+    # ── Interpret HR response ─────────────────────────────────────────
     interpretation_prompt = f"""A recruiter was asked to approve finalizing a job description.
 They replied: "{human_response}"
 
@@ -106,14 +126,61 @@ DETAILS: <summary if changes requested, else "none">"""
 
     interpretation = interpreter_llm.invoke(interpretation_prompt).content
 
-    if "INTENT: APPROVED" in interpretation:
-        return f"JD finalized: {title}"
-    elif "INTENT: REJECTED" in interpretation:
+    # ── Rejected ──────────────────────────────────────────────────────
+    if "INTENT: REJECTED" in interpretation:
         return f"Recruiter declined to finalize '{title}'. Draft remains open for editing."
-    else:
+
+    # ── Changes requested ─────────────────────────────────────────────
+    elif "INTENT: CHANGES_REQUESTED" in interpretation:
         return f"Recruiter requested changes before finalizing: {interpretation}"
 
+    # ── Approved → save to DB and return URL ──────────────────────────
+    else:
+        year = datetime.now().year
 
+        # Build slug from title + year
+        # "L3 Senior Engineer — Healthcare AI Engineering" 
+        # → "l3-senior-engineer-healthcare-ai-engineering-2026"
+        title_slug = title.lower()
+        title_slug = title_slug.replace(" ", "-").replace("—", "").replace("–", "")
+        title_slug = "".join(c for c in title_slug if c.isalnum() or c == "-")
+        title_slug = title_slug.strip("-")
+        slug = f"{title_slug}-{year}"
+
+        db = PostgresSession()
+        try:
+            # Make slug unique if already exists
+            existing = db.query(PostedJD).filter(PostedJD.slug == slug).first()
+            if existing:
+                slug = f"{slug}-{int(datetime.now().timestamp())}"
+
+            new_jd = PostedJD(
+                slug=slug,
+                job_title=title,
+                team_key=team_key,       # None — column is nullable
+                level_code=level_code,   # extracted from title
+                jd_text=jd_text,         # full JD text from description
+                is_active=True,
+            )
+
+            db.add(new_jd)
+            db.commit()
+            db.refresh(new_jd)
+
+            url = f"https://agenthire-frontend.vercel.app/careers/{slug}"
+            return (
+                f"JD finalized and published successfully.\n\n"
+                f"Live at: {url}\n\n"
+                f"Candidates can now view and apply at the Nexus Health careers page."
+            )
+
+        except Exception as e:
+            db.rollback()
+            return f"JD approved but failed to publish: {str(e)}"
+
+        finally:
+            db.close()
+            
 @tool
 def generate_platform_post(jd_draft: dict, platform: str) -> str:
     """Generate compelling, platform-appropriate post copy from a finalized

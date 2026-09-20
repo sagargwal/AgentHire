@@ -120,3 +120,28 @@ class NexusHistoricalJD(NexusBase):
     job_title = Column(String(255), nullable=True)   # ← add this
     is_current = Column(Boolean, default=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+
+class PostedJD(NexusBase):
+    __tablename__ = "posted_jds"
+
+    id          = Column(Integer, primary_key=True)
+    slug        = Column(String(200), unique=True, nullable=False)
+    job_title   = Column(String(200), nullable=False)
+    team_key    = Column(String(100), nullable=True)
+    level_code  = Column(String(20), nullable=True)
+    jd_text     = Column(Text, nullable=False)
+    posted_at   = Column(DateTime(timezone=True), server_default=func.now())
+    is_active   = Column(Boolean, default=True)
+
+class JDDraft(NexusBase):
+    __tablename__ = "jd_drafts"
+
+    id         = Column(Integer, primary_key=True)
+    session_id = Column(String(200), unique=True, nullable=False)
+    team_key   = Column(String(100), nullable=True)
+    level_code = Column(String(20), nullable=True)
+    job_title  = Column(String(200), nullable=True)
+    jd_text    = Column(Text, nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())

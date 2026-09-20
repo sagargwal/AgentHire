@@ -8,7 +8,7 @@ import hashlib
 # ─── Constants ────────────────────────────────────────────────────────────────
 
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 15   # short-lived — refresh token handles long sessions
+ACCESS_TOKEN_EXPIRE_MINUTES = 60  # short-lived — refresh token handles long sessions
 REFRESH_TOKEN_EXPIRE_DAYS = 7       # long-lived — stored in DB, can be revoked
 
 # bcrypt hashing context — used for passwords
@@ -54,7 +54,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 def create_access_token(data: dict) -> str:
     """
     Create a signed JWT. data should be {"sub": user_email}.
-    Token expires in ACCESS_TOKEN_EXPIRE_MINUTES (15 min).
+    Token expires in ACCESS_TOKEN_EXPIRE_MINUTES (60 min).
     Anyone can read the payload — it is signed, not encrypted.
     """
     to_encode = data.copy()

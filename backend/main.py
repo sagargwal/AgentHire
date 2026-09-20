@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer
 from app.routers import jd_builder
 from app.routers import auth
+from app.routers import careers
 
 app = FastAPI(
     title="AgentHire API",
@@ -39,3 +40,4 @@ def health_check():
 
 app.include_router(jd_builder.router)
 app.include_router(auth.router)
+app.include_router(careers.router)
