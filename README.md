@@ -70,7 +70,6 @@ When HR needs a JD, they type one sentence in a chat interface. The agent:
 ```
 Email:       demo@nexushealth.com
 Password:    AgentHire2026
-Invite code: NEXUSHEALTH2026
 ```
 
 The demo runs against **Nexus Health** — a synthetic healthcare technology company with:
