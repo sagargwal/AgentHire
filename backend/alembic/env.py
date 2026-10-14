@@ -7,6 +7,7 @@ from alembic import context
 from app.core.database import Base
 from app.models.user import User  # ensures the User model is registered with Base
 from app.models.refresh_token import RefreshToken
+from app.models.jd_session import JDSession
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config

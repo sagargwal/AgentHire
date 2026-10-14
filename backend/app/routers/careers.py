@@ -34,7 +34,7 @@ def list_careers():
                 "id": job.id,
                 "slug": job.slug,           # the URL-friendly identifier
                 "job_title": job.job_title,
-                "team_key": job.team_key,
+                # team_key intentionally omitted — internal only, never public
                 "level_code": job.level_code,
                 "posted_at": job.posted_at,
                 "is_active": job.is_active,
@@ -70,7 +70,7 @@ def get_career(slug: str):
             "id": job.id,
             "slug": job.slug,
             "job_title": job.job_title,
-            "team_key": job.team_key,
+            # team_key intentionally omitted — internal only, never public
             "level_code": job.level_code,
             "jd_text": job.jd_text,         # full JD text — only on detail page
             "posted_at": job.posted_at,

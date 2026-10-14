@@ -1,7 +1,10 @@
+from typing import Annotated
 from elasticsearch import Elasticsearch
-from langchain_core.tools import tool
+from langchain_core.tools import tool, InjectedToolCallId
+from langchain_core.messages import ToolMessage
 from langchain_openai import ChatOpenAI
-from langgraph.types import interrupt
+from langgraph.types import interrupt, Command
+from langgraph.prebuilt import InjectedState
 from sqlalchemy import text
 from app.core.postgres_db import PostgresSession
 from elasticsearch import Elasticsearch
@@ -9,6 +12,20 @@ from elasticsearch import Elasticsearch
 es_client = Elasticsearch("http://localhost:9200")
 post_llm = ChatOpenAI(model="gpt-4o-mini")
 interpreter_llm = ChatOpenAI(model="gpt-4o-mini")
+
+def fast_intent(human_response: str) -> str | None:
+    """
+    Cheap, free classification for obvious approve/reject replies — button
+    clicks send these exact strings. Returns None for anything ambiguous,
+    so the caller falls back to interpreter_llm instead of guessing.
+    """
+    text = human_response.strip().lower()
+    if text in ("approved", "approve", "yes"):
+        return "APPROVED"
+    if text in ("reject", "rejected", "no"):
+        return "REJECTED"
+    return None
+
 
 
 def _extract_title(jd_draft: dict) -> str:
@@ -82,15 +99,18 @@ def search_market_jds(query: str, seniority: str = None) -> str:
 
 
 @tool
-def finalize_jd(jd_draft: dict) -> str:
+def finalize_jd(jd_draft: Annotated[dict, InjectedState("jd_draft")]) -> str:
     """Call this when you believe the JD is ready to finalize. This will
     pause and ask the recruiter for confirmation before saving the JD to
-    the careers page. Pass the full jd_draft dict with keys:
-    title, description, skills."""
+    the careers page. Uses the current draft from draft_jd automatically —
+    no need to pass the JD text yourself."""
 
     import re
     from app.models.nexus_company import PostedJD
     from datetime import datetime
+
+    if not jd_draft or not jd_draft.get("description"):
+        return "No draft found to finalize. Call draft_jd first."
 
     # ── Extract title ─────────────────────────────────────────────────
     title = _extract_title(jd_draft)
@@ -104,38 +124,30 @@ def finalize_jd(jd_draft: dict) -> str:
     level_match = re.match(r'^(L\d+|R\d+|SEC\d+|LA\d+|OA\d+)', title)
     level_code = level_match.group(1) if level_match else None
 
-    # ── team_key not in jd_draft — store as None (column is nullable) ─
-    team_key = None
+    # ── team_key now comes from draft_jd, which stores it in jd_draft ──
+    team_key = jd_draft.get("team_key")
 
     # ── HITL interrupt ────────────────────────────────────────────────
     human_response = interrupt(
-        f"Ready to finalize '{title}'. Reply with your decision — approve, "
-        f"request changes, or reject — in your own words."
+        f"Ready to finalize '{title}'. Reply approve or reject."
     )
 
     # ── Interpret HR response ─────────────────────────────────────────
     interpretation_prompt = f"""A recruiter was asked to approve finalizing a job description.
 They replied: "{human_response}"
 
-Classify their intent as exactly one of: APPROVED, REJECTED, or CHANGES_REQUESTED.
-If CHANGES_REQUESTED, summarize the requested changes in one short sentence.
+Classify their intent as exactly one of: APPROVED or REJECTED.
 
 Respond in exactly this format:
-INTENT: <APPROVED|REJECTED|CHANGES_REQUESTED>
-DETAILS: <summary if changes requested, else "none">"""
+INTENT: <APPROVED|REJECTED>"""
 
-    interpretation = interpreter_llm.invoke(interpretation_prompt).content
+    intent = fast_intent(human_response)
+    if intent is None:
+        interpretation = interpreter_llm.invoke(interpretation_prompt).content
+        intent = "APPROVED" if "INTENT: APPROVED" in interpretation else "REJECTED"
 
-    # ── Rejected ──────────────────────────────────────────────────────
-    if "INTENT: REJECTED" in interpretation:
-        return f"Recruiter declined to finalize '{title}'. Draft remains open for editing."
-
-    # ── Changes requested ─────────────────────────────────────────────
-    elif "INTENT: CHANGES_REQUESTED" in interpretation:
-        return f"Recruiter requested changes before finalizing: {interpretation}"
-
-    # ── Approved → save to DB and return URL ──────────────────────────
-    else:
+    # ── Approved → save to DB and return URL ───────────────────────────
+    if intent == "APPROVED":
         year = datetime.now().year
 
         # Build slug from title + year
@@ -180,7 +192,11 @@ DETAILS: <summary if changes requested, else "none">"""
 
         finally:
             db.close()
-            
+
+    # ── Anything else → declined, fail-closed ───────────────────────────
+    else:
+        return f"Recruiter declined to finalize '{title}'. Draft remains open for editing."
+
 @tool
 def generate_platform_post(jd_draft: dict, platform: str) -> str:
     """Generate compelling, platform-appropriate post copy from a finalized
@@ -240,25 +256,21 @@ DETAILS: <summary if changes requested, else "none">"""
 @tool
 def get_team_context(team_key: str, year: int = None) -> str:
     """
-    Retrieve the technical profile of a specific Nexus Health team.
-    Returns their current technology stack, active projects, and
-    collaboration partners. Use this when drafting a JD for a role
-    on a specific team — to ground the JD in what the team actually
-    uses, not generic market descriptions.
+    Retrieve the technical profile of a specific Nexus Health team: current
+    technology stack, active projects, and collaboration partners. Use when
+    drafting a JD for a role on a specific team, to ground it in what the
+    team actually uses rather than generic market descriptions.
 
-    team_key: the team's identifier e.g. 'claims_ai', 'clinical_ai_lab',
-              'ml_platform', 'patient_data_platform', 'member_portal',
-              'data_analytics_engineering', 'epidemiology_population_health',
-              'genomics_precision_medicine', 'real_world_evidence',
-              'hipaa_privacy', 'regulatory_affairs', 'contracts_commercial',
-              'ip_patents', 'clinical_program_operations', 'payer_relations',
-              'healthcare_data_operations', 'customer_success',
-              'application_security', 'infrastructure_security', 'iam',
-              'soc', 'compliance_audit'
+    team_key: 'claims_ai', 'clinical_ai_lab', 'ml_platform',
+        'patient_data_platform', 'member_portal', 'data_analytics_engineering',
+        'epidemiology_population_health', 'genomics_precision_medicine',
+        'real_world_evidence', 'hipaa_privacy', 'regulatory_affairs',
+        'contracts_commercial', 'ip_patents', 'clinical_program_operations',
+        'payer_relations', 'healthcare_data_operations', 'customer_success',
+        'application_security', 'infrastructure_security', 'iam', 'soc',
+        'compliance_audit'
 
-    year: optional — if provided, returns the stack as it existed
-          in that year (useful for historical JD generation).
-          If not provided, returns the current stack.
+    year: optional — returns the stack as of that year instead of current.
     """
     db = PostgresSession()
     try:
@@ -352,17 +364,14 @@ def get_team_context(team_key: str, year: int = None) -> str:
 @tool
 def get_level(level_code: str, department_name: str) -> str:
     """
-    Retrieve the exact level definition for a given level code at
-    Nexus Health. Use this whenever an HR person mentions a specific
-    level (L4, R3, SEC5, LA3, OA4 etc.) to get the precise scope,
-    experience range, publication requirements, and what this level
-    actually means at this company — not the generic industry convention.
+    Retrieve the exact level definition for a level code at Nexus Health —
+    scope, experience range, publication requirements, and what this level
+    actually means here, not the generic industry convention. Use whenever
+    HR mentions a specific level (L4, R3, SEC5, LA3, OA4, etc.).
 
-    level_code: the level identifier e.g. 'L4', 'R3', 'SEC5', 'LA3', 'OA4'
-    department_name: the department this level belongs to e.g.
-                     'Technology', 'Health Sciences & Research',
-                     'Web & Application Security', 'Legal & Compliance',
-                     'Operations'
+    level_code: e.g. 'L4', 'R3', 'SEC5', 'LA3', 'OA4'
+    department_name: e.g. 'Technology', 'Health Sciences & Research',
+        'Web & Application Security', 'Legal & Compliance', 'Operations'
     """
     db = PostgresSession()
     try:
@@ -427,60 +436,29 @@ def get_level(level_code: str, department_name: str) -> str:
 @tool
 def query_company_database(sql: str) -> str:
     """
-     Execute a read-only SQL query against the Nexus Health company
-    knowledge database. Use this for any structured question about
-    the company that get_team_context, get_level, get_levels_for_team,
-    and find_team_by_project do not cover.
+    Execute a read-only SQL query against the Nexus Health company knowledge
+    database. Use for structured questions get_team_context, get_level,
+    get_levels_for_team, and find_team_by_project don't cover.
 
-    EXACT TABLE SCHEMAS (use these column names precisely):
-
-    teams:
-        id, department_id, team_key, name, description,
-        headcount, founded_year,
-        internal_collaborations (JSONB), external_collaborations (JSONB)
-
-    team_technologies:
-        id, team_id, name, category, is_mandatory,
+    TABLE SCHEMAS (use these column names exactly):
+    teams: id, department_id, team_key, name, description, headcount,
+        founded_year, internal_collaborations (JSONB), external_collaborations (JSONB)
+    team_technologies: id, team_id, name, category, is_mandatory,
         adopted_year, deprecated_year, notes
+    team_projects: id, team_id, name, status, start_year, end_year, description
+    levels: id, department_id, level_code, level_title, scope, autonomy,
+        manages_people, mentors_levels (JSONB), experience_min, experience_max,
+        publications_required, publications_min, typical_background
+    departments: id, company_id, name, leveling_track, description
+    companies: id, name, industry, founded_year, description
+    historical_jds: id, jd_id, team_id, level_code, year_posted, job_title, is_current
 
-    team_projects:
-        id, team_id, name, status, start_year, end_year, description
+    Example: SELECT t.name, tt.is_mandatory FROM team_technologies tt
+    JOIN teams t ON t.id = tt.team_id WHERE tt.name = 'Kafka'
 
-    levels:
-        id, department_id, level_code, level_title, scope,
-        autonomy, manages_people, mentors_levels (JSONB),
-        experience_min, experience_max, publications_required,
-        publications_min, typical_background
-
-    departments:
-        id, company_id, name, leveling_track, description
-
-    companies:
-        id, name, industry, founded_year, description
-
-    historical_jds:
-        id, jd_id, team_id, level_code, year_posted,
-        job_title, is_current
-
-    EXAMPLE QUERIES:
-    -- Which teams use Kafka?
-    SELECT t.name as team_name, tt.is_mandatory, tt.adopted_year
-    FROM team_technologies tt
-    JOIN teams t ON t.id = tt.team_id
-    WHERE tt.name = 'Kafka'
-
-    -- What levels exist for Technology department?
-    SELECT level_code, level_title, experience_min, experience_max
-    FROM levels l
-    JOIN departments d ON d.id = l.department_id
-    WHERE d.name ILIKE '%Technology%'
-    ORDER BY level_code
-
-    IMPORTANT: SELECT only. Never INSERT, UPDATE, DELETE, or DROP.
-
-    Only these tables are accessible:
-    companies, departments, teams, levels,
-    team_technologies, team_projects, historical_jds
+    SELECT only — never INSERT, UPDATE, DELETE, or DROP. Only these tables
+    are accessible: companies, departments, teams, levels, team_technologies,
+    team_projects, historical_jds.
     """
 
     # ── Security check 1: SELECT only ────────────────────────────────────
@@ -535,23 +513,16 @@ def query_company_database(sql: str) -> str:
 @tool
 def search_internal_jds(query: str, team_key: str = None, level_code: str = None, year: int = None) -> str:
     """
-    Search Nexus Health's internal historical job description corpus.
-    Use this to find past JDs for a specific team and level — to understand
-    how the role has been described before, how requirements have evolved
-    over time, and to ground new JDs in the company's institutional voice.
+    Search Nexus Health's internal historical JD corpus — past JDs for a
+    team/level, to see how a role has been described before, how
+    requirements evolved, and to match institutional voice. Use when
+    drafting (to see the last JD for this role) or when HR asks what was
+    posted last time. Not for market comparison — use search_market_jds.
 
-    query: what to search for e.g. "ML engineer claims processing"
-    team_key: optional — filter to a specific team e.g. "claims_ai", "clinical_ai_lab"
-    level_code: optional — filter to a specific level e.g. "L4", "R3", "SEC5"
-    year: optional — filter to a specific year e.g. 2021, 2022
-
-    Use this tool when:
-    - Drafting a JD and want to see what the last JD for this role looked like
-    - Checking how a role's requirements have evolved over time
-    - Needing to match Nexus Health's institutional voice and style
-    - HR asks "what did we post last time for this role?"
-
-    Do NOT use this for market comparison — use search_market_jds for that.
+    query: what to search for, e.g. "ML engineer claims processing"
+    team_key: optional filter, e.g. "claims_ai"
+    level_code: optional filter, e.g. "L4"
+    year: optional filter, e.g. 2021
     """
     try:
         es = Elasticsearch("http://localhost:9200")
@@ -635,7 +606,12 @@ def search_internal_jds(query: str, team_key: str = None, level_code: str = None
         return f"Error searching internal JDs: {str(e)}"
 
 @tool
-def draft_jd(team_key: str, level_code: str, additional_requirements: str = None) -> str:
+def draft_jd(
+    team_key: str,
+    level_code: str,
+    tool_call_id: Annotated[str, InjectedToolCallId],
+    additional_requirements: str = None,
+) -> Command:
     """
     Generate a complete, structured, sanitized external-facing JD for a
     specific Nexus Health team and level. Call this when the HR person has
@@ -656,6 +632,11 @@ def draft_jd(team_key: str, level_code: str, additional_requirements: str = None
     Then paste the complete output unchanged.
     """
     from langchain_openai import ChatOpenAI
+
+    def _reply(text: str) -> Command:
+        return Command(update={
+            "messages": [ToolMessage(content=text, tool_call_id=tool_call_id, name="draft_jd")]
+        })
 
     # ── Domain name mapping ───────────────────────────────────────────────────
     DOMAIN_NAMES = {
@@ -713,7 +694,7 @@ def draft_jd(team_key: str, level_code: str, additional_requirements: str = None
         """), {"team_key": team_key}).fetchone()
 
         if not team_row:
-            return (
+            return _reply(
                 f"Error: team '{team_key}' not found in database. "
                 f"Check the team_key and try again."
             )
@@ -735,7 +716,7 @@ def draft_jd(team_key: str, level_code: str, additional_requirements: str = None
         }).fetchone()
 
         if not level_row:
-            return (
+            return _reply(
                 f"Error: level '{level_code}' not found for "
                 f"department '{team_row.department_name}'. "
                 f"Check the level_code and try again."
@@ -865,8 +846,13 @@ Use it purely as a style and voice reference.
         additional_note = ""
         if additional_requirements:
             additional_note = (
-                f"\n\nADDITIONAL REQUIREMENTS FROM HR "
-                f"(incorporate these exactly as stated):\n"
+                f"\n\nADDITIONAL REQUIREMENTS FROM HR — apply these throughout "
+                f"the whole JD below, in whichever section each one naturally "
+                f"belongs (technology bullets, experience, responsibilities, "
+                f"scope, tone, anything else) — not just the Required list. "
+                f"Incorporate the INTENT of each one, but still generalize any "
+                f"internal project names, client names, or system names per the "
+                f"confidentiality rules above, even if HR stated them literally:\n"
                 f"{additional_requirements}"
             )
 
@@ -889,7 +875,8 @@ Mentors: {mentors}
 Typical background: {level_row.typical_background}
 
 ═══ TECHNOLOGY STACK ═══
-Use ONLY these technologies — do not add, remove, or substitute anything.
+Use ONLY these technologies — do not add, remove, or substitute anything,
+unless HR's additional requirements above explicitly ask for a change.
 Required: {required}{preferred_section}
 
 ═══ WORK CONTEXT ═══
@@ -921,9 +908,13 @@ Each bullet must:
 
 Section 4 — What We Are Looking For
 Required:
-  - One bullet per required technology
+  - One bullet per required technology listed above
+  - If the additional requirements from HR above ask to add a technology
+    as required, include it as its own bullet here too, in the same style
   - Each bullet: [Technology Name]: one sentence explaining WHY it matters for this role
-  - Final bullet: Experience: exactly "{exp_range}"
+  - Final bullet: Experience: "{exp_range}" — unless the additional
+    requirements from HR above explicitly state a different experience
+    requirement, in which case use HR's stated requirement instead
   {pub_section}
 
 {f"Preferred:{chr(10)}  - One bullet per preferred technology with one-line description." if preferred else ""}
@@ -940,8 +931,11 @@ Do NOT use the level code itself in the prose.
 1. NEVER name internal projects — describe category of work instead
 2. NEVER name specific clients — say "hospital system integrations"
 3. NEVER reveal internal system architecture — generalize
-4. ONLY use technologies from the Required/Preferred lists — nothing else
-5. Experience range must be exactly: {exp_range} — do not round or approximate
+4. ONLY use technologies from the Required/Preferred lists, plus any
+   technology HR's additional requirements above explicitly asked to add
+5. Experience range must be exactly: {exp_range} — do not round or
+   approximate, unless HR's additional requirements above explicitly
+   state a different experience requirement, in which case use that
 6. Publications: {"HARD requirement — minimum " + str(level_row.publications_min) + " peer-reviewed publications required. State this clearly." if level_row.publications_required else "Do not mention publications anywhere in the JD."}
 7. Length: 400-500 words total
 8. Tone: direct and professional — not marketing language, not generic corporate speak
@@ -957,19 +951,33 @@ Write the job description now."""
         response = llm.invoke(prompt)
         generated_jd = response.content
 
-        # ── 9. Return with clear delimiter ────────────────────────────────────
-        # The delimiter tells the agent exactly how to handle this output:
-        # present it verbatim, do not compress or reformat
-        return f"""DRAFT JD READY — PRESENT THIS EXACTLY TO THE HR PERSON.
-DO NOT SUMMARIZE, COMPRESS, OR REFORMAT. PASTE IT VERBATIM.
-ADD ONLY ONE LINE BEFORE IT: "Here is the draft — let me know if you would like any changes:"
+        # ── 9. Persist the draft to state and return the display text ─────────
+        # jd_draft is saved to state so finalize_jd can read it directly —
+        # the model never has to retype the JD text as a tool argument.
+        # The ════ divider (this exact Unicode character) is required —
+        # the frontend chat UI (page.tsx formatMessage) detects it to
+        # render the JD in its formatted box with approve/change buttons.
+        display_text = f"""Here is the draft — let me know if you would like any changes:
 
 ════════════════════════════════════════════════════════════════
 {generated_jd}
 ════════════════════════════════════════════════════════════════"""
 
+
+        return Command(update={
+            "jd_draft": {
+                "title": job_title,
+                "description": generated_jd,
+                "skills": required_techs,
+                "experience_range": exp_range,
+                "team_key": team_key,
+                "level_code": level_row.level_code,
+            },
+            "messages": [ToolMessage(content=display_text, tool_call_id=tool_call_id, name="draft_jd")]
+        })
+
     except Exception as e:
-        return f"Error generating JD: {str(e)}"
+        return _reply(f"Error generating JD: {str(e)}")
 
     finally:
         db.close()
@@ -978,19 +986,15 @@ ADD ONLY ONE LINE BEFORE IT: "Here is the draft — let me know if you would lik
 @tool
 def get_levels_for_team(team_key: str) -> str:
     """
-    Get all level definitions for the department that a specific team 
-    belongs to. Use this when HR uses a generic title like "Senior", 
-    "Junior", "Principal", "Lead" — to find the correct internal level 
-    options for that team's department.
-
-    Always use this tool instead of query_company_database for level
-    lookups — it guarantees the correct department is used by going
-    through the team, not by assuming a department name.
+    Get all level definitions for a team's department — use when HR uses a
+    generic title ("Senior", "Junior", "Principal", "Lead") to find the
+    correct internal level options. Always prefer this over
+    query_company_database for level lookups — it resolves the correct
+    department via the team automatically.
 
     team_key: e.g. "claims_ai", "clinical_ai_lab", "compliance_audit"
 
-    Returns all levels for this team's department with scope and 
-    experience range — use these to present 2 appropriate options to HR.
+    Returns all levels for that department with scope and experience range.
     """
     db = PostgresSession()
     try:

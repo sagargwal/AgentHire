@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from langchain_core.messages import HumanMessage
+from langchain_core.callbacks import get_usage_metadata_callback
 from langgraph.types import Command
 import uuid
 from app.agents.jd_builder.graph import chat_bot
@@ -8,6 +9,7 @@ from app.core.auth_dependency import verify_token
 from app.core.database import engine
 from app.models.user import User
 from app.models.refresh_token import RefreshToken
+from app.models.jd_session import JDSession
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import text
 
@@ -90,29 +92,15 @@ def add_tokens_used(email: str, tokens: int):
         db.close()
 
 
-def get_exact_tokens(result: dict) -> int:
+def tokens_from_callback(cb) -> int:
     """
-    Extract exact token count from OpenAI API response metadata.
-    LangGraph stores token usage in each AIMessage's response_metadata.
-    We sum across all AI messages in this turn since the agent
-    may make multiple LLM calls (one per reasoning step).
+    Sum total_tokens across every model tracked by a UsageMetadataCallbackHandler
+    for this one invoke() call only — not the whole thread history. Catches every
+    ChatOpenAI call made during that invoke, including ones made directly inside
+    a tool (draft_jd, interpreter_llm, post_llm), since the callback is attached
+    via contextvar, not by walking messages after the fact.
     """
-    total_tokens = 0
-    messages = result.get("messages", [])
-
-    for msg in messages:
-        # only AIMessage objects have response_metadata
-        # HumanMessage and ToolMessage do not
-        if hasattr(msg, "response_metadata"):
-            usage = msg.response_metadata.get("token_usage", {})
-            if usage:
-                # total_tokens = prompt_tokens + completion_tokens
-                # this is the exact count OpenAI charged us for
-                total_tokens += usage.get("total_tokens", 0)
-
-    # if no usage found (shouldn't happen but defensive)
-    # fall back to 0 rather than crashing
-    return total_tokens if total_tokens > 0 else 0
+    return sum(usage.get("total_tokens", 0) for usage in cb.usage_metadata.values())
 
 
 @router.post("/sessions")
@@ -129,13 +117,19 @@ def start_session(payload: StartSessionRequest, user_email: str = Depends(verify
     session_id = str(uuid.uuid4())
     config = {"configurable": {"thread_id": session_id}}
 
-    result = chat_bot.invoke(
-        {"messages": [HumanMessage(content=payload.initial_message)], "jd_draft": {}, "status": "drafting"},
-        config=config
-    )
+    db = DBSession()
+    try:
+        db.add(JDSession(session_id=session_id, user_id=user.id))
+        db.commit()
+    finally:
+        db.close()
 
-    # estimate tokens used in this turn
-    tokens_used = get_exact_tokens(result)
+    with get_usage_metadata_callback() as cb:
+        result = chat_bot.invoke(
+            {"messages": [HumanMessage(content=payload.initial_message)], "jd_draft": {}, "status": "drafting"},
+            config=config
+        )
+        tokens_used = tokens_from_callback(cb)
 
     # update the user's token counter in MySQL
     add_tokens_used(user_email, tokens_used)
@@ -153,21 +147,32 @@ def send_message(session_id: str, payload: MessageRequest, user_email: str = Dep
     # check token limit BEFORE running the agent
     check_token_limit(user)
 
+    db = DBSession()
+    try:
+        owned = db.query(JDSession).filter(
+            JDSession.session_id == session_id,
+            JDSession.user_id == user.id
+        ).first()
+    finally:
+        db.close()
+
+    if not owned:
+        raise HTTPException(status_code=404, detail="Session not found")
+
     config = {"configurable": {"thread_id": session_id}}
 
     state = chat_bot.get_state(config)
     is_paused = bool(state.next)
 
-    if is_paused:
-        result = chat_bot.invoke(Command(resume=payload.message), config=config)
-    else:
-        result = chat_bot.invoke(
-            {"messages": [HumanMessage(content=payload.message)]},
-            config=config
-        )
-
-    # estimate and record tokens used
-    tokens_used = get_exact_tokens(result)
+    with get_usage_metadata_callback() as cb:
+        if is_paused:
+            result = chat_bot.invoke(Command(resume=payload.message), config=config)
+        else:
+            result = chat_bot.invoke(
+                {"messages": [HumanMessage(content=payload.message)]},
+                config=config
+            )
+        tokens_used = tokens_from_callback(cb)
     add_tokens_used(user_email, tokens_used)
 
     return _format_response(session_id, result)

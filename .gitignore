@@ -25,3 +25,8 @@ backend/batch_id.txt
 # OS
 .DS_Store
 Thumbs.db
+
+benchmark/
+backend/.scratch/
+.scratch_report/
+backend/nul
