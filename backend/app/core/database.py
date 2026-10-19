@@ -10,7 +10,7 @@ load_dotenv()
 DATABASE_URL = os.environ["DATABASE_URL"]
 
 # Engine = manages the pool of actual connections to MySQL. Doesn't connect yet, just knows how to.
-engine = create_engine(DATABASE_URL)
+engine = create_engine(DATABASE_URL, pool_pre_ping=True, pool_recycle=1800)
 
 # Factory that creates new DB "sessions" (conversations) on demand, all using this engine.
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
